@@ -5,6 +5,14 @@ VisualStudioVersion = 17.5.33530.505
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebsiteCustomerChat", "WebsiteCustomerChat\WebsiteCustomerChat.csproj", "{9081D9B7-254B-4D7D-8D75-39330315CBD3}"
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebsiteCustomerChatMVC", "..\MVC\WebsiteCustomerChatMVC\WebsiteCustomerChatMVC.csproj", "{7153FF38-DBAE-4910-AD12-0B1FE874A626}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebiteCustomerChatWebApi", "..\WebApi\WebiteCustomerChatWebApi\WebiteCustomerChatWebApi.csproj", "{D7879B40-953F-4B7D-BA67-145F2709646F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WccEntityFrameworkDriver", "..\WccEntityFrameworkDriver\WccEntityFrameworkDriver.csproj", "{09F6CFEB-BFDC-4E7A-90BF-4AAE5E8806FC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebsiteCustomerChatConfiguration", "WebsiteCustomerChatConfiguration\WebsiteCustomerChatConfiguration.csproj", "{7DB94D24-BD5C-4154-BC41-310DD18961CB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +23,22 @@ Global
 		{9081D9B7-254B-4D7D-8D75-39330315CBD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9081D9B7-254B-4D7D-8D75-39330315CBD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9081D9B7-254B-4D7D-8D75-39330315CBD3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7153FF38-DBAE-4910-AD12-0B1FE874A626}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7153FF38-DBAE-4910-AD12-0B1FE874A626}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7153FF38-DBAE-4910-AD12-0B1FE874A626}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7153FF38-DBAE-4910-AD12-0B1FE874A626}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7879B40-953F-4B7D-BA67-145F2709646F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7879B40-953F-4B7D-BA67-145F2709646F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7879B40-953F-4B7D-BA67-145F2709646F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7879B40-953F-4B7D-BA67-145F2709646F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{09F6CFEB-BFDC-4E7A-90BF-4AAE5E8806FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{09F6CFEB-BFDC-4E7A-90BF-4AAE5E8806FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{09F6CFEB-BFDC-4E7A-90BF-4AAE5E8806FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{09F6CFEB-BFDC-4E7A-90BF-4AAE5E8806FC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7DB94D24-BD5C-4154-BC41-310DD18961CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7DB94D24-BD5C-4154-BC41-310DD18961CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7DB94D24-BD5C-4154-BC41-310DD18961CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7DB94D24-BD5C-4154-BC41-310DD18961CB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
