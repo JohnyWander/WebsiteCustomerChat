@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
+using System.Xml;
 using static WebsiteCustomerChatConfiguration.ConfigurationConstraints;
 
 namespace WebsiteCustomerChatConfiguration
@@ -29,9 +30,9 @@ namespace WebsiteCustomerChatConfiguration
         public const char _desc = '|';
         public const string configFilename = "WebsiteCustomerChat.conf";
 
-        private static ConfigData[] ?ParsedConfiguration;
+        public static List<ConfigData> ParsedConfiguration = new List<ConfigData>();
 
-        public static ConfigData[] Configuration {
+        public static List<ConfigData> Configuration {
             get
             {
                 if (ParsedConfiguration is not null)
@@ -46,8 +47,9 @@ namespace WebsiteCustomerChatConfiguration
         {
             string[] validconfigNames = ConfigDictionary.Select(x=>x.Name).ToArray();
 
-            
-            List<string> configLoaded =  File.ReadAllLines(configFilename).Where(s=>!s.StartsWith(_desc)).ToList(); //filter out commented values
+            string[] fileLines = File.ReadAllLines(configFilename);
+
+            List<string> configLoaded =  fileLines.Where(s=>!s.StartsWith(_desc)).Where(s=>!string.IsNullOrEmpty(s)).ToList(); //filter out commented values
             List<string> configNames = new List<string>();
             List<string> configValues = new List<string>();
             configLoaded.ForEach(x =>
@@ -62,13 +64,60 @@ namespace WebsiteCustomerChatConfiguration
                 Debug.WriteLine("NOT OK");
                 List<string> InvalidConfigNames = configNames.Except(validconfigNames.ToList()).ToList();
                 StringBuilder ExceptionMessage = new StringBuilder();
-                InvalidConfigNames.ForEach(x=> ExceptionMessage.AppendLine($"Invalid configuration - {x} at line{InvalidConfigNames.IndexOf(x)}"));
+                InvalidConfigNames.ForEach(x => { Debug.WriteLine(x); ExceptionMessage.AppendLine($"Invalid configuration - {x} at line {fileLines.ToList().FindIndex(s => s.StartsWith(x))} "); }); ; ;
                 ExceptionMessage.AppendLine("Please check readme for valid configuration options");
+                Debug.WriteLine(ExceptionMessage.ToString());
                 throw new ConfigurationException(ExceptionMessage.ToString());
             }
             else
-            { 
-             
+            {
+
+                configLoaded.ForEach(x =>
+                {
+                    string[] split = x.Split("=");
+                    string name = split[0];
+                    string value = split[1];
+
+                    Debug.WriteLine(name);
+
+                    ConfigData ConfigToLoad = ConfigDictionary.Where(x => x.Name == name).Single();
+
+
+
+                    List<string> FailedConstraints = new List<string>();
+
+                    if (ConfigToLoad.ValueConstraints is not null) { 
+
+                        ConfigToLoad.ValueConstraints.ToList().ForEach(x =>
+                        {
+                            if (!x(ConfigToLoad.Value))
+                            {
+                                FailedConstraints.Add($"Configuration constraint- {x.Method.Name} for conf name {ConfigToLoad.Name} and it's value {value}");
+                            }
+                        });
+
+                        if (FailedConstraints.Count != 0)
+                        {
+                            string exceptionMessage = "";
+                            FailedConstraints.ForEach(x => { exceptionMessage += x + "\n"; });
+                            throw new ConfigurationException(exceptionMessage);
+                        }
+                        else
+                        {
+                            ParsedConfiguration.Add(new ConfigData(ConfigToLoad.Name,value,ConfigToLoad.Description));
+                        }
+
+                    }
+                    else
+                    {
+                        ParsedConfiguration.Add(new ConfigData(ConfigToLoad.Name, value, ConfigToLoad.Description));
+                    }
+
+                });
+                
+
+
+
                
             }
 
@@ -86,7 +135,7 @@ namespace WebsiteCustomerChatConfiguration
             foreach(ConfigData data in ConfigDictionary)
             {
                 await writer.WriteLineAsync(_desc + data.Description);
-                await writer.WriteLineAsync($"{data.Name}={data.Value}");
+                await writer.WriteLineAsync($"{data.Name}={data.Value}\n");
             }
 
             await writer.DisposeAsync();
@@ -125,8 +174,8 @@ namespace WebsiteCustomerChatConfiguration
                     value:"3306",
                     description:"Port on which database listens",
                     constrains: (_)=>IsDecimal()
-
                 )
+            
 
             };
 
