@@ -1,17 +1,28 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace WccEntityFrameworkDriver.DatabaseEngineOperations
 {
-    public class SqliteEngine : DatabaseOperationsBase
+    public class SQLITEengine : DatabaseEngine
     {
-        public override void CreateDatabase(string DBName)
+        private string _DBFileLocation;
+        public SQLITEengine(string dbFileLocation)
         {
-            return;
+
+            _DBFileLocation = dbFileLocation;
+
+
+
         }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder options)
+           => options.UseSqlite($"Data Source={_DBFileLocation}");
+
 
 
     }

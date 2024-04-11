@@ -2,20 +2,21 @@
 using System.Diagnostics;
 using WebsiteCustomerChatMVC.Models;
 
+
 namespace WebsiteCustomerChatMVC.Controllers
 {
-    public class HomeController : Controller
+    public class InstallController : Controller
     {
         private readonly ILogger<HomeController> _logger;
 
-        public HomeController(ILogger<HomeController> logger)
+        public InstallController(ILogger<HomeController> logger)
         {
             _logger = logger;
         }
 
-        public IActionResult Index()
+        public IActionResult Install()
         {
-            return View(new IndexViewModel());
+            return View();
         }
 
         public IActionResult Privacy()

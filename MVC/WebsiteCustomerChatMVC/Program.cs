@@ -1,9 +1,14 @@
+
+using WccEntityFrameworkDriver.DatabaseEngineOperations;
+
 namespace WebsiteCustomerChatMVC
 {
     public class Program
     {
         public static void Main(string[] args)
         {
+            SQLITEengine engine = new SQLITEengine(AppDomain.CurrentDomain.BaseDirectory+"TEST.DB");
+            engine.Database.EnsureCreated();
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
@@ -29,6 +34,11 @@ namespace WebsiteCustomerChatMVC
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
+            app.MapControllerRoute(
+                name: "Install",
+                pattern: "{controller=Install}/{action=Install}/{id?}"
+                );
 
             app.Run();
         }

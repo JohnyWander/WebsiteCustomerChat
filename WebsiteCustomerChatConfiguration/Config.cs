@@ -180,7 +180,7 @@ namespace WebsiteCustomerChatConfiguration
                 (
                     name:"DatabaseHost",
                     value:"localhost",
-                    description:"Host address of the database"
+                    description:"Host address of the database or db file path for sqlite"
                 ),
            new ConfigData
                 (
