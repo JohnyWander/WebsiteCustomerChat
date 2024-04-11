@@ -58,6 +58,22 @@ namespace WebsiteCustomerChatConfiguration
                 configNames.Add(split[0]);
             });
 
+            var dupes = configNames.GroupBy(x => x)
+                .Where(g => g.Count() > 1)
+                .Select(g => new { Value = g.Key,Count = g.Count() });
+
+            if (dupes.Count() > 0)
+            {
+                StringBuilder ExceptionMessage = new StringBuilder("Duplicate value found - dupes found - at - ");
+                dupes.ToList().ForEach(x =>
+                {
+                    int line = fileLines.ToList().FindIndex(s => s.StartsWith(x.Value));
+                    ExceptionMessage.AppendLine($"{x.Value} at line {line}");
+
+                });
+                throw new ConfigurationException(ExceptionMessage.ToString());
+            }
+
 
             if (!configNames.All(validconfigNames.Contains))
             {
@@ -114,11 +130,9 @@ namespace WebsiteCustomerChatConfiguration
                     }
 
                 });
-                
 
 
 
-               
             }
 
            
