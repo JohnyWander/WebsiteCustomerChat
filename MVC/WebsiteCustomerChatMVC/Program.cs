@@ -7,8 +7,8 @@ namespace WebsiteCustomerChatMVC
     {
         public static void Main(string[] args)
         {
-            SQLITEengine engine = new SQLITEengine(AppDomain.CurrentDomain.BaseDirectory+"TEST.DB");
-            engine.Database.EnsureCreated();
+            //SQLITEengine engine = new SQLITEengine(AppDomain.CurrentDomain.BaseDirectory+"TEST.DB");
+           // engine.Database.EnsureCreated();
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
