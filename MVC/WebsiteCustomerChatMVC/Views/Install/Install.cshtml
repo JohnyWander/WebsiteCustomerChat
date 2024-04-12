@@ -1,9 +1,182 @@
-﻿
+﻿@model InstallationViewModel
 @{
     ViewData["Title"] = "Install";
 }
 
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        h2 {
+            text-align: center;
+        }
+
+        form {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"],
+        input[type="password"]
+        
+        {
+            width: calc(100% - 12px); /* Subtract padding and border width */
+            padding: 6px; /* Padding for input fields */
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box; /* Include padding and border in width calculation */
+        }
+
+        input[type="submit"],input[type="button"] {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover, input[type="button"]:hover {
+                background-color: #45a049;
+            }
+
+        input[type="submit"]:disabled, input[type="button"]:disabled {
+            background-color: gray;
+        }
+
+        
+        .error {
+            color: red;
+        }
+    </style>
+
+    
+@section scripts
+    {
+
+    <script>
+        document.getElementById("registerForm").addEventListener("input", function () {
+            var username = document.getElementById("username").value;
+            var password = document.getElementById("password").value;
+            var confirmPassword = document.getElementById("confirmPassword").value;
+            var confirmPasswordError = document.getElementById("confirmPasswordError");
+            var submitButton = document.getElementsByClassName("submitButton");
+
+            if (username && password && confirmPassword && password === confirmPassword) {
+                confirmPasswordError.textContent = "";
+
+                for(var button of submitButton){
+                    button.disabled=false;
+                }
+
+               
+            } else {
+                if (password !== confirmPassword) {
+                    confirmPasswordError.textContent = "Passwords do not match";
+                } else {
+                    confirmPasswordError.textContent = "";
+                }
+                for (var button of submitButton) {
+                    button.disabled = true;
+                }
+            }
+        });
+
+
+        function stepTwo(){
+         
+            document.getElementById("stepOne").style.display="none";
+            document.getElementById("stepTwo").style.display="inherit";
+
+        }
+
+        function showAdditionalInputs() {
+            var languageRadios = document.getElementsByName("dbengine");
+            var additionalInputsDiv = document.getElementById("additionalInputs");
+
+        }
+
+        function ShowSqliteConfig()
+        {
+            document.getElementById("sqlitedbFile").style.display="block";
+            document.getElementById("mysqlconfig").style.display="none";
+        }
+
+        function ShowMysqlConfig()
+        {
+            document.getElementById("sqlitedbFile").style.display = "none";
+            document.getElementById("mysqlconfig").style.display = "block";
+        }
+
+
+    </script>
+
+    
+
+
+}
+
 <h1>Install</h1>
+
+
+
+
+@if (Model is null)
+{
+        <h2>Administrator account</h2>
+    <form method="post" id="registerForm">
+        
+        <div id="stepOne">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br>
+
+        <label for="confirmPassword">Confirm Password:</label>
+        <input type="password" id="confirmPassword" name="confirmPassword" required>
+        <span id="confirmPasswordError" class="error"></span><br>
+
+        <input type="button" class="submitButton" value="Continue" onclick="stepTwo()" disabled>
+
+        </div>
+        <div id="stepTwo" style="display:none;">
+
+            Sqlite&nbsp;<input type="radio" id="language1" name="dbengine" value="sqlite" onclick="ShowSqliteConfig()"><br>
+            Mysql&nbsp;<input type="radio" id="language2" name="dbengine" value="mysql" onclick="ShowMysqlConfig()">
+
+            <div style="display:none" id="sqlitedbFile">Sqlite DB file path<input type="text" id="sqlitedbFile" name="sqlitedbFile" ><br></div>
+
+            <div style="display:none" id="mysqlconfig">
+
+            Mysql host address&nbsp;<input type="text" class="mysqlinput" name="server" value="localhost" required><br>
+            Mysql host port&nbsp;<input type="text" class="mysqlinput" name="port" value="3389" required><br>
+            Database name&nbsp;<input type="text" class="mysqlinput" name="port" value="" required><br>
+            Database user&nbsp;<input type="text" class="mysqlinput" name="user" value="" required><br>
+            User password&nbsp;<input type="password" class="mysqlinput" name="dbuserpassword" value=""><br>
+
+                
+
+                </div>
+            <input type="submit" class="submitButton" value="Continue" disabled>
+        </div>
+
+    </form>
+
+}
+else
+{
+    <p>Got form</p>
+}
 
 
 

@@ -19,10 +19,13 @@ namespace WebsiteCustomerChatMVC.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        [HttpPost]
+        public IActionResult Install(IFormCollection form)
         {
-            return View();
+            
+            return View(new InstallationViewModel(form));
         }
+
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
