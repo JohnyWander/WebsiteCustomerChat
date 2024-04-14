@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Query.Internal;
 using System;
 using System.Collections.Generic;
 using System.Reflection.Metadata;
+using WccEntityFrameworkDriver.DatabaseEngineOperations.Interfaces;
 
 namespace WccEntityFrameworkDriver.DatabaseEngineOperations
 {
@@ -19,18 +20,21 @@ namespace WccEntityFrameworkDriver.DatabaseEngineOperations
         public DatabaseEngine()
         {
 
-
+          
 
         }
 
-        // The following configures EF to create a Sqlite database file in the
-        // special "local" folder for your platform.
-        /*  protected override void OnConfiguring(DbContextOptionsBuilder options)
-              => options.UseSqlite();
-        */
+     
 
         protected abstract override void OnConfiguring(DbContextOptionsBuilder options);
+
+
+        
+
     }
+
+
+
 
     public class Blog
     {

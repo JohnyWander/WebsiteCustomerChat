@@ -13,7 +13,7 @@ namespace WebsiteCustomerChatMVC
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-
+            builder.Services.AddEndpointsApiExplorer();
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -40,6 +40,7 @@ namespace WebsiteCustomerChatMVC
                 pattern: "{controller=Install}/{action=Install}/{id?}"
                 );
 
+           
             app.Run();
         }
     }

@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using WccEntityFrameworkDriver.DatabaseEngineOperations.Interfaces;
 
 namespace WccEntityFrameworkDriver.DatabaseEngineOperations
 {
-    public class MySQLengine : DatabaseEngine
+    public class MySQLengine : DatabaseEngine,IDbInstallation
     {
+    
         private string _server;
         private string _dbport;
         private string _dbname;
@@ -25,7 +27,12 @@ namespace WccEntityFrameworkDriver.DatabaseEngineOperations
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)
-           => options.UseMySQL($"server={_server};port={_dbport};database={_dbname};user={_dbuser};password={_dbpassword}");  
+           => options.UseMySQL($"server={_server};port={_dbport};database={_dbname};user={_dbuser};password={_dbpassword}");
+
+        public async Task CheckForDbOrCreate()
+        {
+            await this.Database.EnsureCreatedAsync();
+        }
 
     }
 }
