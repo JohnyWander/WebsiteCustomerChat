@@ -109,12 +109,25 @@
         {
             document.getElementById("sqlitedbFile").style.display="block";
             document.getElementById("mysqlconfig").style.display="none";
+            document.getElementById("sqlitedbFile").getElementsByTagName("input")[0].required = true;
+
+            var mys = document.getElementsByClassName("mysqlinput");
+
+            for (var i = 0; i < mys.length; i++) {
+                mys[i].required =false;
+            }
         }
 
         function ShowMysqlConfig()
         {
             document.getElementById("sqlitedbFile").style.display = "none";
             document.getElementById("mysqlconfig").style.display = "block";
+            document.getElementById("sqlitedbFile").getElementsByTagName("input")[0].required=false;
+            var myq = document.getElementsByClassName("mysqlinput");
+            for (var i = 0; i < myq.length; i++) {
+                myq[i].required = true;
+            }
+     
         }
 
 
@@ -130,7 +143,7 @@
 
 
 
-@if (Model is null)
+@if (Model is null) // If chat is not installed
 {
         <h2>Administrator account</h2>
     <form method="post" id="registerForm">
@@ -154,28 +167,34 @@
             Sqlite&nbsp;<input type="radio" id="language1" name="dbengine" value="sqlite" onclick="ShowSqliteConfig()"><br>
             Mysql&nbsp;<input type="radio" id="language2" name="dbengine" value="mysql" onclick="ShowMysqlConfig()">
 
-            <div style="display:none" id="sqlitedbFile">Sqlite DB file path<input type="text" id="sqlitedbFile" name="sqlitedbFile" ><br></div>
+            <div style="display:none" id="sqlitedbFile">Sqlite DB file path<input type="text" name="sqlitedbFile" required><br></div>
 
             <div style="display:none" id="mysqlconfig">
 
             Mysql host address&nbsp;<input type="text" class="mysqlinput" name="server" value="localhost" required><br>
             Mysql host port&nbsp;<input type="text" class="mysqlinput" name="port" value="3389" required><br>
-            Database name&nbsp;<input type="text" class="mysqlinput" name="name" value="" required><br>
-            Database user&nbsp;<input type="text" class="mysqlinput" name="user" value="" required><br>
-            User password&nbsp;<input type="password" class="mysqlinput" name="dbuserpassword" value=""><br>
+                Database name&nbsp;<input type="text" class="mysqlinput" name="name" required><br>
+                Database user&nbsp;<input type="text" class="mysqlinput" name="user" required><br>
+                User password&nbsp;<input type="password" class="mysqlinput" name="dbuserpassword" required><br>
 
                 
 
                 </div>
-            <input type="submit" class="submitButton" value="Continue" disabled>
+            <input type="submit" class="submitButton" disabled>
         </div>
 
     </form>
 
 }
-else
+else // if installation form was successfully sent
 {
-    <p>Got form</p>
+    
+    
+
+
+
+
+
 }
 
 

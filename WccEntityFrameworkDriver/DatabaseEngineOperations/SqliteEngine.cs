@@ -24,7 +24,6 @@ namespace WccEntityFrameworkDriver.DatabaseEngineOperations
         protected override void OnConfiguring(DbContextOptionsBuilder options)
            => options.UseSqlite($"Data Source={_DBFileLocation}");
 
-
-
+        
     }
 }

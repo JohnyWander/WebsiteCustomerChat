@@ -8,7 +8,7 @@ using WccEntityFrameworkDriver.DatabaseEngineOperations.Interfaces;
 
 namespace WccEntityFrameworkDriver.DatabaseEngineOperations
 {
-    public class MySQLengine : DatabaseEngine,IDbInstallation
+    public class MySQLengine : DatabaseEngine
     {
     
         private string _server;
@@ -29,10 +29,7 @@ namespace WccEntityFrameworkDriver.DatabaseEngineOperations
         protected override void OnConfiguring(DbContextOptionsBuilder options)
            => options.UseMySQL($"server={_server};port={_dbport};database={_dbname};user={_dbuser};password={_dbpassword}");
 
-        public async Task CheckForDbOrCreate()
-        {
-            await this.Database.EnsureCreatedAsync();
-        }
+        
 
     }
 }

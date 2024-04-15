@@ -1,7 +1,13 @@
-﻿using System.Diagnostics;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Diagnostics;
 using System.Security.Cryptography;
+using WebsiteCustomerChatMVC.Models;
+using Microsoft.AspNetCore.Components.RenderTree;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using WccEntityFrameworkDriver.DatabaseEngineOperations;
 using WccEntityFrameworkDriver.DatabaseEngineOperations.Interfaces;
+using Microsoft.CodeAnalysis.Scripting.Hosting;
 
 namespace WebsiteCustomerChatMVC.Models
 {
@@ -25,8 +31,11 @@ namespace WebsiteCustomerChatMVC.Models
 
         internal IDbInstallation DBengine;
 
+       
+
         public InstallationViewModel(IFormCollection form)
         {
+           
             AdminUsername = form["username"];
             AdminPassword = form["password"];
             AdminConfirmPassword = form["confirmPassword"];
@@ -35,6 +44,8 @@ namespace WebsiteCustomerChatMVC.Models
             if(dbengine == "sqlite")
             {
                 sqlitedbFile = form["sqlitedbFile"];
+                DBengine = new SQLITEengine(sqlitedbFile);
+                
             }
             else if(dbengine == "mysql")
             {
@@ -45,21 +56,27 @@ namespace WebsiteCustomerChatMVC.Models
                 dbuserpassword = form["password"];
 
                 DBengine = new MySQLengine(server,port,dbname,dbuser,dbuserpassword);
-                DBengine.CheckForDbOrCreate().Wait();
+                
             }
-
-            /*
-             * 
-               Mysql host address&nbsp;<input type="text" class="mysqlinput" name="server" value="localhost" required><br>
-            Mysql host port&nbsp;<input type="text" class="mysqlinput" name="port" value="3389" required><br>
-            Database name&nbsp;<input type="text" class="mysqlinput" name="name" value="" required><br>
-            Database user&nbsp;<input type="text" class="mysqlinput" name="user" value="" required><br>
-            User password&nbsp;<input type="password" class="mysqlinput" name="dbuserpassword" value=""><br>
-*/
-
 
 
 
         }
+
+        public string EnsureOrCreate()
+        {
+            try
+            {
+                
+                DBengine.CheckForDbOrCreate();
+               
+                return "Success";
+            }catch(Exception ex)
+            {
+                return $"DB creation failed with exception - {ex.Message}";
+            }
+        }
+
+
     }
 }

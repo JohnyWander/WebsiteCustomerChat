@@ -7,7 +7,7 @@ using WccEntityFrameworkDriver.DatabaseEngineOperations.Interfaces;
 
 namespace WccEntityFrameworkDriver.DatabaseEngineOperations
 {
-    public abstract class DatabaseEngine : DbContext
+    public abstract class DatabaseEngine : DbContext, IDbInstallation
     {
 
         public DbSet<Blog> Blogs { get; set; }
@@ -29,7 +29,11 @@ namespace WccEntityFrameworkDriver.DatabaseEngineOperations
         protected abstract override void OnConfiguring(DbContextOptionsBuilder options);
 
 
-        
+        public bool CheckForDbOrCreate()
+        {
+            return this.Database.EnsureCreated();
+        }
+
 
     }
 
