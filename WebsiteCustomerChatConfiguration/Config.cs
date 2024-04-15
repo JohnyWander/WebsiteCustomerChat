@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Xml;
@@ -141,20 +142,39 @@ namespace WebsiteCustomerChatConfiguration
         }
 
 
+        
+
         public static async Task BuildConfigFile()
         {
-            StreamWriter writer = new StreamWriter(configFilename);
-            await writer.WriteLineAsync(_desc+"This is config file for Website CustomerChat");
-
-            foreach(ConfigData data in ConfigDictionary)
+            try
             {
-                await writer.WriteLineAsync(_desc + data.Description);
-                await writer.WriteLineAsync($"{data.Name}={data.Value}\n");
-            }
+                StreamWriter writer = new StreamWriter(configFilename);
+                await writer.WriteLineAsync(_desc + "This is config file for Website CustomerChat");
 
-            await writer.DisposeAsync();
+                foreach (ConfigData data in ConfigDictionary)
+                {
+                    await writer.WriteLineAsync(_desc + data.Description);
+                    await writer.WriteLineAsync($"{data.Name}={data.Value}\n");
+                }
+
+                await writer.DisposeAsync();
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Error writing config file: " + e.Message);
+            }
         }
 
+        public static Task SetConfigValue(string ConfigKey,string Value)
+        {
+            ConfigData toChange = ConfigDictionary.FirstOrDefault(x => x.Name == ConfigKey);
+
+            Debug.WriteLine(ConfigDictionary.IndexOf(toChange));
+            ConfigDictionary[ConfigDictionary.IndexOf(toChange)] = new ConfigData(toChange.Name, Value,toChange.Description,toChange.ValueConstraints);
+            
+            return Task.CompletedTask;
+            
+        }
 
         public static List<ConfigData> ConfigDictionary = new List<ConfigData>
             {
@@ -164,12 +184,19 @@ namespace WebsiteCustomerChatConfiguration
                     value:"",
                     description:"Database engine used by the app, value is assigned during installation, however you may change that later on."
                 ),
+            new ConfigData(
+                    name:"DatabaseName",
+                    value:"",
+                    description:"Name of the database or the database file location path for sqlite"
+                
+                ),
             new ConfigData
                 (
                     name:"DatabaseUser",
                     value:"",
                     description:"User used to login to the database, not used for sglite engine."
                 ),
+                           
             new ConfigData
                 (
                     name:"DatabasePassword",

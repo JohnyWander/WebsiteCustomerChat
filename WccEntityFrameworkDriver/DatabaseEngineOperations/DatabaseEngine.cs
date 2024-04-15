@@ -29,9 +29,9 @@ namespace WccEntityFrameworkDriver.DatabaseEngineOperations
         protected abstract override void OnConfiguring(DbContextOptionsBuilder options);
 
 
-        public bool CheckForDbOrCreate()
+        public async Task<bool> CheckForDbOrCreate()
         {
-            return this.Database.EnsureCreated();
+            return await this.Database.EnsureCreatedAsync();
         }
 
 

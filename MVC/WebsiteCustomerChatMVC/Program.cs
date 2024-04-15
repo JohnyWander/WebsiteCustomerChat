@@ -20,7 +20,7 @@ namespace WebsiteCustomerChatMVC
             builder.Services.AddControllersWithViews();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddRazorPages();
-            builder.Services.AddScoped<IViewRenderer, ViewRenderer>();
+            //builder.Services.AddScoped<IViewRenderer, ViewRenderer>();
             var app = builder.Build();
 
             
