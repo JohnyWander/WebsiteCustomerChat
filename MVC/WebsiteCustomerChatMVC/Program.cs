@@ -1,15 +1,31 @@
-
+using System.Diagnostics;
 using WccEntityFrameworkDriver.DatabaseEngineOperations;
 using WebsiteCustomerChatMVC.ViewTostring;
+using WebsiteCustomerChatConfiguration;
 
 namespace WebsiteCustomerChatMVC
 {
     public class Program
     {
-        
+        public static void Init()
+        {
+            bool ConfigExists = File.Exists(Config.configFilename);
+            if (ConfigExists)
+            {
+                Config.ParseConfig();
+
+            }
+            else
+            {
+                return;
+            }
+            Debug.WriteLine(ConfigExists);
+        }
+
+
         public static void Main(string[] args)
         {
-
+            Init();
            
 
             //SQLITEengine engine = new SQLITEengine(AppDomain.CurrentDomain.BaseDirectory+"TEST.DB");
@@ -24,24 +40,7 @@ namespace WebsiteCustomerChatMVC
             var app = builder.Build();
 
             
-            //app.UseWhen(context => context.Request.Path.StartsWithSegments("/install"), builder =>
-            //{
-/*
-                app.Use(async (context, next) =>
-                {
-                    context.Response.OnStarting(async() =>
-                    {
-                        
-                        await context.Response.WriteAsync(await source.Task);
-                        source = new TaskCompletionSource<string>();
-                       // return Task.FromResult(0);
-                    });
-
-                    await next();
-                });
-*/
-           // });
-            
+           
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())

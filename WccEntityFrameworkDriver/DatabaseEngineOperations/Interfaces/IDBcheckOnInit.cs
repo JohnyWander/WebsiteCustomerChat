@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 
 namespace WccEntityFrameworkDriver.DatabaseEngineOperations.Interfaces
 {
-    public interface IDbInstallation
+    internal interface IDBcheckOnInit
     {
 
-         public Task CheckForDbOrCreate();
-
-         public void Dispose();
+        public bool DatabaseExists();
+        public void Dispose();
 
         public ValueTask DisposeAsync();
     }

@@ -176,6 +176,16 @@ namespace WebsiteCustomerChatConfiguration
             
         }
 
+        public static string GetConfigValue(string ConfigKey)
+        {
+           return ParsedConfiguration.FirstOrDefault(x => x.Name == ConfigKey).Value;            
+        }
+
+        public static IEnumerable<string> GetConfigKeys()
+        {
+            return ConfigDictionary.Select(x => x.Name);
+        }
+
         public static List<ConfigData> ConfigDictionary = new List<ConfigData>
             {
             new ConfigData
