@@ -1,5 +1,6 @@
 using System.Diagnostics;
 using WccEntityFrameworkDriver.DatabaseEngineOperations;
+using WccEntityFrameworkDriver.DatabaseEngineOperations.Interfaces;
 using WebsiteCustomerChatMVC.ViewTostring;
 using WebsiteCustomerChatConfiguration;
 
@@ -13,11 +14,23 @@ namespace WebsiteCustomerChatMVC
             if (ConfigExists)
             {
                 Config.ParseConfig();
+                string dbEngine = Config.ParsedConfiguration.FirstOrDefault(x => x.Name == "DatabaseEngine").Value;
+                string DbName = Config.ParsedConfiguration.FirstOrDefault(x => x.Name == "DatabaseName").Value;
+                IDBcheckOnInit dbcontecx = dbEngine switch
+                {
+                    "sqlite" => new SQLITEengine(DbName),
+                    "mysql" => new MySQLengine(DbName)
+                };
+              
+                    
+                    
+                    
 
+                
             }
             else
             {
-                return;
+                return; // Assume that wcc is not installed and proceed with normal startup
             }
             Debug.WriteLine(ConfigExists);
         }

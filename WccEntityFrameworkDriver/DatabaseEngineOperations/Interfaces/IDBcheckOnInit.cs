@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace WccEntityFrameworkDriver.DatabaseEngineOperations.Interfaces
-{
-    internal interface IDBcheckOnInit
+namespace WccEntityFrameworkDriver.DatabaseEngineOperations.Interfaces {
+
+public interface IDBcheckOnInit
     {
 
         public bool DatabaseExists();
