@@ -9,6 +9,6 @@ namespace WccEntityFrameworkDriver.DatabaseEngineOperations.Interfaces
     public interface IDbInstallation
     {
 
-         public Task<bool> CheckForDbOrCreate();
+         public Task CheckForDbOrCreate();
     }
 }

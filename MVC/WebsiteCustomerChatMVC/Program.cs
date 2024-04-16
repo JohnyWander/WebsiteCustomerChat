@@ -24,8 +24,8 @@ namespace WebsiteCustomerChatMVC
             var app = builder.Build();
 
             
-            app.UseWhen(context => context.Request.Path.StartsWithSegments("/install"), builder =>
-            {
+            //app.UseWhen(context => context.Request.Path.StartsWithSegments("/install"), builder =>
+            //{
 /*
                 app.Use(async (context, next) =>
                 {
@@ -40,7 +40,7 @@ namespace WebsiteCustomerChatMVC
                     await next();
                 });
 */
-            });
+           // });
             
 
             // Configure the HTTP request pipeline.

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,7 +24,7 @@ namespace WccEntityFrameworkDriver.DatabaseEngineOperations
             _dbname = dbname;
             _dbuser = dbuser;
             _dbpassword = dbpassword;
-
+            Debug.WriteLine(_dbpassword);
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder options)

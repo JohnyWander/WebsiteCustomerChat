@@ -33,7 +33,8 @@ namespace WebsiteCustomerChatMVC.Models
 
         internal IDbInstallation DBengine;
 
-       
+        internal bool ConfigOK;
+        internal bool DatabaseOK;
 
         public InstallationViewModel(IFormCollection form)
         {
@@ -55,12 +56,12 @@ namespace WebsiteCustomerChatMVC.Models
                 port = form["port"];
                 dbname = form["name"];
                 dbuser = form["user"];
-                dbuserpassword = form["password"];
+                dbuserpassword = form["dbuserpassword"];
 
                 DBengine = new MySQLengine(server,port,dbname,dbuser,dbuserpassword);
                 
             }
-
+            /*
 
             Type type = this.GetType();
             FieldInfo[] fields = type.GetFields(BindingFlags.Instance | BindingFlags.NonPublic);
@@ -74,7 +75,7 @@ namespace WebsiteCustomerChatMVC.Models
                     Console.WriteLine($"{field.Name}: {value}");
                 }
             }
-
+            */
         }
 
         public async Task Setconfiguration()
@@ -101,6 +102,7 @@ namespace WebsiteCustomerChatMVC.Models
             try
             {
                 await Config.ParseConfig();
+                this.ConfigOK = true;
                 return "Success!";
             }
             catch (ConfigurationException ex)
@@ -116,11 +118,11 @@ namespace WebsiteCustomerChatMVC.Models
             {
                 
                 await DBengine.CheckForDbOrCreate();
-               
+                this.DatabaseOK = true;
                 return "Success";
             }catch(Exception ex)
             {
-                return $"DB creation failed with exception - {ex.Message}";
+                return $"DB creation failed with exception -{ex.GetType().Name} {ex.Message} {ex.InnerException.GetType().Name} {ex.InnerException.Message}";
             }
         }
 

@@ -55,17 +55,25 @@ namespace WebsiteCustomerChatMVC.Controllers
                 string viewString = await RenderViewToStringAsync("Install", new InstallationViewModel(form), ControllerContext);
                 await Response.WriteAsync(viewString);
                 //await Task.Delay(5000);
-                await Response.WriteAsync("Creating Config File...\n");
+                await Response.WriteAsync("Creating Config File...<br>");
                 await model.Setconfiguration();
-                await Task.Delay(5000);
+                
                 await Config.BuildConfigFile();
-                await Response.WriteAsync("Values Set, conf file created,\nTrying to parse Configuration...\n");
-                await Response.WriteAsync(await model.TryParseConfig()+"\n");
-                await Response.WriteAsync("Trying to create database ... \n");
-                await Response.WriteAsync(await model.EnsureOrCreate()+"\n");
+                await Response.WriteAsync("Values Set, conf file created,\nTrying to parse Configuration...<br>");
+                await Response.WriteAsync(await model.TryParseConfig()+ "<br>");
+                await Response.WriteAsync("Trying to create database ... <br>");
+                await Response.WriteAsync(await model.EnsureOrCreate()+"<br>");
+                // await Response.WriteAsync("\n");
 
-
-
+                
+                if(model.DatabaseOK && model.ConfigOK)
+                {
+                    await Response.WriteAsync("Installation success <button value=\"Login' onclick='location.href=\">");
+                }
+                else
+                {
+                    await Response.WriteAsync("Installation failed <button style=\"width:100px;height:50px\" value =\"retry\" onclick=\"location.reload()\">Retry</button>");
+                }
 
 
 
