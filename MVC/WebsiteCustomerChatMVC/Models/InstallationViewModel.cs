@@ -10,6 +10,7 @@ using WccEntityFrameworkDriver.DatabaseEngineOperations.Interfaces;
 using Microsoft.CodeAnalysis.Scripting.Hosting;
 using WebsiteCustomerChatConfiguration;
 using System.Reflection;
+using Org.BouncyCastle.Crypto.Generators;
 
 namespace WebsiteCustomerChatMVC.Models
 {
@@ -35,6 +36,8 @@ namespace WebsiteCustomerChatMVC.Models
 
         internal bool ConfigOK;
         internal bool DatabaseOK;
+
+
 
         public InstallationViewModel(IFormCollection form)
         {

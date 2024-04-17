@@ -14,19 +14,30 @@ namespace WebsiteCustomerChatMVC
             if (ConfigExists)
             {
                 Config.ParseConfig();
-                string dbEngine = Config.ParsedConfiguration.FirstOrDefault(x => x.Name == "DatabaseEngine").Value;
-                string DbName = Config.ParsedConfiguration.FirstOrDefault(x => x.Name == "DatabaseName").Value;
+                string dbEngine = Config.GetConfigValue("DatabaseEngine");
+                
+                string DbName = Config.GetConfigValue("DatabaseName");
+                string DbServer = Config.GetConfigValue("DatabaseHost");
+                string dbport = Config.GetConfigValue("DatabasePort");
+                string dbuser = Config.GetConfigValue("DatabaseUser");
+                string dbpassword = Config.GetConfigValue("DatabasePassword");
                 IDBcheckOnInit dbcontecx = dbEngine switch
                 {
                     "sqlite" => new SQLITEengine(DbName),
-                    "mysql" => new MySQLengine(DbName)
+                    "mysql" => new MySQLengine(DbServer,dbport,DbName,dbuser,dbpassword)
                 };
-              
-                    
-                    
-                    
 
-                
+                if (!dbcontecx.DatabaseExists())
+                {
+                    dbcontecx.CheckForDbOrCreate().Wait();
+                }
+
+
+                dbcontecx.Dispose();
+
+
+
+
             }
             else
             {

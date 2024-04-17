@@ -1,10 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using MySql.Data.MySqlClient;
+using Org.BouncyCastle.Bcpg;
 using System;
 using System.Collections.Generic;
 using System.Reflection.Metadata;
 using WccEntityFrameworkDriver.DatabaseEngineOperations.Interfaces;
+using WccEntityFrameworkDriver.DatabaseEngineOperations.Tables;
 
 
 namespace WccEntityFrameworkDriver.DatabaseEngineOperations
@@ -12,9 +14,12 @@ namespace WccEntityFrameworkDriver.DatabaseEngineOperations
     public abstract class DatabaseEngine : DbContext, IDbInstallation,IDBcheckOnInit
     {
 
-        public DbSet<Blog> Blogs { get; set; }
-        public DbSet<Post> Postss { get; set; }
+        //public DbSet<Blog> Blogs { get; set; }
+        //public DbSet<Post> Postss { get; set; }
 
+        public DbSet<Users> users { get; set; }
+        public DbSet<Permissions> permissions { get; set; }
+        public DbSet<Chats> chats { get; set; }
 
 
 
@@ -26,7 +31,7 @@ namespace WccEntityFrameworkDriver.DatabaseEngineOperations
 
         }
 
-
+        
 
         protected abstract override void OnConfiguring(DbContextOptionsBuilder options);
 
@@ -37,31 +42,37 @@ namespace WccEntityFrameworkDriver.DatabaseEngineOperations
             return Task.CompletedTask;
         }
 
+        private async Task AddDefaultPermissions()
+        {
+            this.permissions.AddRangeAsync(
+                new Permissions { PermissionName = "ALL" },
+                new Permissions { PermissionName ="ChatWithClient"}
+
+
+                ); ;
+           
+            
+        }
+
+        private async Task AddDefaultRoles()
+        {
+
+        }
+
+
         public bool DatabaseExists()
         {
             return this.Database.CanConnect();
             
         }
 
+       // public Task CreateUser(string username,string password,)
+
+        
 
 
 
-        public class Blog
-        {
-            public int? BlogId { get; set; }
-            public string? Url { get; set; }
-
-            public List<Post>? Posts { get; } = new();
-        }
-        public class Post
-        {
-            public int? PostId { get; set; }
-            public string? Title { get; set; }
-            public string? Content { get; set; }
-
-            public int? BlogId { get; set; }
-            public Blog? Blog { get; set; }
-        }
+      
 
     }
 }

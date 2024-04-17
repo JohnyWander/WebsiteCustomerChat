@@ -11,21 +11,12 @@ using System.Threading.Tasks;
 
 namespace WccEntityFrameworkDriver.DatabaseEngineOperations.Tables
 {
-    public class Users
+    
+    public class Permissions
     {
         [Key]
-        public int Id { get; set; }
+        public int PermissionID { get; set; }
 
-        public byte[] p_hash { get; set; }
-
-
-        public string username { get; set; }
-
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-
-        public List<Permissions> Permissions { get; set; }
-
-
+        public string PermissionName { get; set; }
     }
 }

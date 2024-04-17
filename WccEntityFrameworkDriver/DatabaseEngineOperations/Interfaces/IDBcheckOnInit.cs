@@ -12,6 +12,10 @@ public interface IDBcheckOnInit
         public bool DatabaseExists();
         public void Dispose();
 
+        public Task CheckForDbOrCreate();
+
+
+
         public ValueTask DisposeAsync();
     }
 }
