@@ -16,6 +16,8 @@ namespace WccEntityFrameworkDriver.DatabaseEngineOperations.Tables
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public ICollection<Permissions> Permissions { get; set; }
+
+        public ICollection<Users> Users { get; set; }
+        public ICollection<Permissions> RolePermissions { get; set; }
     }
 }

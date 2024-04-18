@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis.Scripting.Hosting;
 using WebsiteCustomerChatConfiguration;
 using System.Reflection;
 using Org.BouncyCastle.Crypto.Generators;
+using System.Runtime.CompilerServices;
 
 namespace WebsiteCustomerChatMVC.Models
 {
@@ -36,7 +37,7 @@ namespace WebsiteCustomerChatMVC.Models
 
         internal bool ConfigOK;
         internal bool DatabaseOK;
-
+        internal bool AdminOK;
 
 
         public InstallationViewModel(IFormCollection form)
@@ -115,6 +116,7 @@ namespace WebsiteCustomerChatMVC.Models
 
         }
 
+
         public async Task<string> EnsureOrCreate()
         {
             try
@@ -127,6 +129,20 @@ namespace WebsiteCustomerChatMVC.Models
             {
                 return $"DB creation failed with exception -{ex.GetType().Name} {ex.Message} {ex.InnerException.GetType().Name} {ex.InnerException.Message}";
             }
+        }
+
+        public async Task<string> CreateAdminAccount()
+        {
+            try
+            {
+                await DBengine.CreateAdminAccount(this.AdminUsername, this.AdminPassword);
+                this.AdminOK = true;
+                return "Success";
+            }catch(Exception ex)
+            {
+                return $"Error when creating Administrator account -{ex.GetType().Name} {ex.Message} {ex.InnerException.GetType().Name} {ex.InnerException.Message}";
+            }
+
         }
 
 

@@ -12,7 +12,7 @@ namespace WccEntityFrameworkDriver.DatabaseEngineOperations.Tables
 {
     public class Chats
     {
-
+        [Key]
         public int ChatID { get; set; }
 
     }

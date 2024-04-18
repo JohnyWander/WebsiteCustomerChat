@@ -8,11 +8,9 @@ namespace WccEntityFrameworkDriver.DatabaseEngineOperations.Interfaces
 {
     public interface IDbInstallation
     {
-
+        public Task CreateAdminAccount(string Username, string Password);
          public Task CheckForDbOrCreate();
-
          public void Dispose();
-
-        public ValueTask DisposeAsync();
+         public ValueTask DisposeAsync();
     }
 }

@@ -33,7 +33,7 @@ namespace WebsiteCustomerChatMVC
                 }
 
 
-                dbcontecx.Dispose();
+            //    dbcontecx.Dispose();
 
 
 

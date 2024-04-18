@@ -63,6 +63,8 @@ namespace WebsiteCustomerChatMVC.Controllers
                 await Response.WriteAsync(await model.TryParseConfig()+ "<br>");
                 await Response.WriteAsync("Trying to create database ... <br>");
                 await Response.WriteAsync(await model.EnsureOrCreate()+"<br>");
+                await Response.WriteAsync("Creating Admin Account");
+                await Response.WriteAsync(await model.CreateAdminAccount());
                 // await Response.WriteAsync("\n");
 
                 

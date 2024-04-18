@@ -17,6 +17,7 @@ namespace WccEntityFrameworkDriver.DatabaseEngineOperations.Tables
         public int Id { get; set; }
 
         public byte[] p_hash { get; set; }
+       // public byte[] p_salt { get; set; }
 
 
         public string username { get; set; }
@@ -24,7 +25,12 @@ namespace WccEntityFrameworkDriver.DatabaseEngineOperations.Tables
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
-        public List<Permissions> Permissions { get; set; }
+        public ICollection<Roles> UserRole { get; set; }
+
+        public DateTime CreationDate { get; set; }
+
+        public DateTime LastLogin { get; set; }
+        
 
 
     }
