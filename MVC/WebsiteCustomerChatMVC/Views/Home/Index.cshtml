@@ -18,7 +18,25 @@
         }
         else
         {
-            //TODO: login page
+            if (Model.RedirectFromBadLogin)
+            {
+                <div style="background-color:red";width="200px";height="50px"><div style="text-align:center;color:white;">Invalid username or password</Div></Div>
+            }
+
+
+
+            <h3>Login</h3>
+
+            <form method="post" action="/LoggedIn">
+            <input type="text" placeholder="username" name="username"><br>
+            <input style="margin-top:5px" type="password" placeholder="password" name="password"><br>
+            <input style="margin-top:5px" type="submit" value="Login">
+            
+            
+            </form>
+
+
+
         }
     }
     

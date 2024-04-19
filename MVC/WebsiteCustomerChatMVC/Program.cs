@@ -50,10 +50,10 @@ namespace WebsiteCustomerChatMVC
         public static void Main(string[] args)
         {
             Init();
-           
+
 
             //SQLITEengine engine = new SQLITEengine(AppDomain.CurrentDomain.BaseDirectory+"TEST.DB");
-           // engine.Database.EnsureCreated();
+            // engine.Database.EnsureCreated();
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
@@ -63,8 +63,8 @@ namespace WebsiteCustomerChatMVC
             //builder.Services.AddScoped<IViewRenderer, ViewRenderer>();
             var app = builder.Build();
 
-            
-           
+
+
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -73,7 +73,7 @@ namespace WebsiteCustomerChatMVC
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
@@ -89,6 +89,10 @@ namespace WebsiteCustomerChatMVC
                 name: "Install",
                 pattern: "{controller=Install}/{action=Install}/{id?}"
                 );
+            app.MapControllerRoute(
+                name: "LoggedIn",
+                pattern: "{controller=LoggedIn}/{action=LoggedIn}/{id?}"
+                ); ;
 
            
             app.Run();

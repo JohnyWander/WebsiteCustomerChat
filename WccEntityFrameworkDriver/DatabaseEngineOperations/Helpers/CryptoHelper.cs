@@ -13,7 +13,7 @@ namespace WccEntityFrameworkDriver.DatabaseEngineOperations.Helpers
     public delegate void CryptoDebugEvent(string x);
     public class CryptoHelper
     {
-        private int _cost;
+        private int _cost = 9;
         public int Cost { 
             get { return _cost; }
             set { }
@@ -22,10 +22,16 @@ namespace WccEntityFrameworkDriver.DatabaseEngineOperations.Helpers
         public event CryptoDebugEvent CryptoDebugEvent;
 
         private RNGCryptoServiceProvider _rng = new RNGCryptoServiceProvider();
-        public byte[] BcryptPasswordHash(string password)
+        public byte[] BcryptPasswordHash(string password,out byte[]salt)
         {
-            return BCrypt.Generate(Encoding.UTF8.GetBytes(password), GenerateSalt(),9);
+            salt = GenerateSalt();
+            return BCrypt.Generate(Encoding.UTF8.GetBytes(password), salt,_cost);
                 
+        }
+
+        public bool BcryptVerifyPassword(string pass, byte[] hash, byte[] salt)
+        {
+            return hash.SequenceEqual(BCrypt.Generate(Encoding.UTF8.GetBytes(pass), salt, _cost));
         }
 
         /// <summary>
