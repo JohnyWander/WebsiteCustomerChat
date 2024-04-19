@@ -12,6 +12,7 @@ using WccEntityFrameworkDriver.DatabaseEngineOperations.Helpers;
 using WccEntityFrameworkDriver.DatabaseEngineOperations.Interfaces;
 using WccEntityFrameworkDriver.DatabaseEngineOperations.Tables;
 using WccEntityFrameworkDriver.DatabaseEngineOperations.DataSets;
+using System.Reflection.Emit;
 
 namespace WccEntityFrameworkDriver.DatabaseEngineOperations
 {
@@ -39,27 +40,37 @@ namespace WccEntityFrameworkDriver.DatabaseEngineOperations
 
         protected abstract override void OnConfiguring(DbContextOptionsBuilder options);
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        private void ConfigureUsers(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Users>().HasIndex(x => x.LastName).IsUnique(false);
             modelBuilder.Entity<Users>().Property(x => x.LastName).IsRequired(false);
-
-
             modelBuilder.Entity<Users>().HasIndex(x => x.username).IsUnique();
             modelBuilder.Entity<Users>().Property(e => e.FirstName).IsRequired(false);
 
             modelBuilder.Entity<Users>()
             .HasIndex(e => e.FirstName)
             .IsUnique(false);
+        }
 
+        private void ConfigureChats(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Chats>().HasIndex(x => x.ReceivedFilePaths).IsUnique(false);
+            modelBuilder.Entity<Chats>().Property(x => x.ReceivedFilePaths).IsRequired(false);
+            modelBuilder.Entity<Chats>().HasIndex(x => x.SendedFilePaths).IsUnique(false);
+            modelBuilder.Entity<Chats>().Property(e => e.SendedFilePaths).IsRequired(false);
+        }
+
+
+        private void ConfigureRelations(ModelBuilder modelBuilder)
+        {
             modelBuilder.Entity<Users>()
-                .HasMany(u => u.UserRole)
-                .WithMany(r => r.Users)
-                .UsingEntity<Dictionary<string, object>>(
-                "UserRoles",
-                ur => ur.HasOne<Roles>().WithMany().HasForeignKey("RoleId"),
-                ur => ur.HasOne<Users>().WithMany().HasForeignKey("UserId")
-            );
+              .HasMany(u => u.UserRole)
+              .WithMany(r => r.Users)
+              .UsingEntity<Dictionary<string, object>>(
+              "UserRoles",
+              ur => ur.HasOne<Roles>().WithMany().HasForeignKey("RoleId"),
+              ur => ur.HasOne<Users>().WithMany().HasForeignKey("UserId")
+          );
 
 
             modelBuilder.Entity<Roles>()
@@ -70,6 +81,46 @@ namespace WccEntityFrameworkDriver.DatabaseEngineOperations
                 rp => rp.HasOne<Permissions>().WithMany().HasForeignKey("PermissionId"),
                 rp => rp.HasOne<Roles>().WithMany().HasForeignKey("RoleId")
             );
+
+            modelBuilder.Entity<Users>()
+                .HasMany(u => u.Chats)
+                .WithMany(r => r.UsersResp)
+                .UsingEntity<Dictionary<string, object>>(
+                "UserChats",
+                ur => ur.HasOne<Chats>().WithMany().HasForeignKey("ChatId"),
+                ur => ur.HasOne<Users>().WithMany().HasForeignKey("UserId")
+
+                );
+
+            modelBuilder.Entity<Chats>()
+               .HasMany(r => r.UsersResp)
+               .WithMany(p => p.Chats)
+               .UsingEntity<Dictionary<string, object>>(
+               "StaffResponsibleForChat",
+               r => r.HasOne<Users>().WithMany().HasForeignKey("ChatId"),
+               r => r.HasOne<Chats>().WithMany().HasForeignKey("UserId")
+
+
+               );
+        }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            //  modelBuilder.Entity<Chats>().HasIndex(x=>x.)           
+
+            ConfigureUsers(modelBuilder);
+            ConfigureChats(modelBuilder);
+
+
+            ConfigureRelations(modelBuilder);
+
+          
+
+
+       
+                
+                
+
         }
 
         public Task CheckForDbOrCreate()

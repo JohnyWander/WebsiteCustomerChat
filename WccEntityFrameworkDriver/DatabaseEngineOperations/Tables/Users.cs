@@ -41,7 +41,7 @@ namespace WccEntityFrameworkDriver.DatabaseEngineOperations.Tables
         [AllowNull]
         public DateTime LastLogin { get; set; }
         
-
+        public ICollection<Chats> Chats { get; set; }
 
     }
 }

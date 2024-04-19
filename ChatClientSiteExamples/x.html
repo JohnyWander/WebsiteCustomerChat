@@ -1,0 +1,23 @@
+<head><script src="SignalR.js"></script>
+
+<script>
+
+const connection = new signalR.HubConnectionBuilder()
+    .withUrl("https://localhost/chatHub")
+    .build();
+
+connection.on("ReceiveMessage", (user, message) => {
+    // Handle received message
+    console.log(`${user}: ${message}`);
+});
+
+connection.start().catch(err => console.error(err));
+
+// Example function to send message
+function sendMessage(user, message) {
+    connection.invoke("SendMessage", user, message).catch(err => console.error(err));
+}
+
+</script>
+
+</head>
