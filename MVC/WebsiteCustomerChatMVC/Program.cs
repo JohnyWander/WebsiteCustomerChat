@@ -3,6 +3,7 @@ using WccEntityFrameworkDriver.DatabaseEngineOperations;
 using WccEntityFrameworkDriver.DatabaseEngineOperations.Interfaces;
 using WebsiteCustomerChatMVC.ViewTostring;
 using WebsiteCustomerChatConfiguration;
+using Microsoft.AspNetCore.SignalR;
 
 namespace WebsiteCustomerChatMVC
 {
@@ -60,6 +61,17 @@ namespace WebsiteCustomerChatMVC
             builder.Services.AddControllersWithViews();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddRazorPages();
+            builder.Services.AddSignalR();
+            builder.Services.AddCors(options => options.AddPolicy("CorsPolicy",
+            builder =>
+            {
+                builder.AllowAnyHeader()
+                       .AllowAnyMethod()
+                       .SetIsOriginAllowed((host) => true)
+                       .AllowCredentials();
+            }));
+
+
             //builder.Services.AddScoped<IViewRenderer, ViewRenderer>();
             var app = builder.Build();
 
@@ -72,6 +84,7 @@ namespace WebsiteCustomerChatMVC
                 app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
+                
             }
 
             app.UseHttpsRedirection();
@@ -94,7 +107,14 @@ namespace WebsiteCustomerChatMVC
                 pattern: "{controller=LoggedIn}/{action=LoggedIn}/{id?}"
                 ); ;
 
-           
+            app.UseCors("CorsPolicy");
+          
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapHub<SignarR.ChatHub>("/Chathub");
+            });
+
+
             app.Run();
         }
     }

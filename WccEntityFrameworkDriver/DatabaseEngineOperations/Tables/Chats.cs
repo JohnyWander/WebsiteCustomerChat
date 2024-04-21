@@ -23,10 +23,10 @@ namespace WccEntityFrameworkDriver.DatabaseEngineOperations.Tables
 
         public ICollection<Users> UsersResp { get; set; }
 
-        List<byte[]> TextBlobs { get; set; } 
+        public byte[] ConversationBlob { get; set; }
         
-        public List<string> ReceivedFilePaths { get; set; }
-        public List<string> SendedFilePaths { get; set; }
+        public string ReceivedFilePaths { get; set; }
+        public string SendedFilePaths { get; set; }
 
 
         public DateTime TimeStarted { get; set; }
