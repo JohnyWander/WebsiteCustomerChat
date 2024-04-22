@@ -16,6 +16,10 @@ function bold(d) {
     });
 }
 
+function AppendChat(c) {
+    document.getElementById(`"${c}"`).innerHTML += "<div class='texmsg'>" + Message + "</div>";
+}
+
 $(document).ready(function () {
     const connection = new signalR.HubConnectionBuilder()
         .withUrl("/ChatterHub")
@@ -39,7 +43,7 @@ $(document).ready(function () {
     connection.on("NewMessage", (uid, Message) => {
 
         bold(`"${uid}"`);
-        document.getElementById(`"${uid}"`).innerHTML += "<div class='texmsg'>" + Message + "</div>";
+        AppendChat(`"${uid}"`);
 
 
 
