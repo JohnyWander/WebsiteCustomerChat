@@ -1,0 +1,30 @@
+﻿
+
+
+#chatPage{
+    width:100vw;
+    height:100vw;
+    
+}
+
+#chatUsers{
+    width:30%;
+    height:100%;
+    float:left;
+    border:1px solid black;
+}
+
+
+#chatBody {
+    height:100%;
+    width: 70%;
+    border: 1px solid black;
+}
+
+.chatclient{
+    width:100%;
+    height:100px;
+    border:1px solid black;
+
+
+}

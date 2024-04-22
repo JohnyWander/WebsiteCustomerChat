@@ -1,13 +1,20 @@
 $(document).ready(function() {
   const connection = new signalR.HubConnectionBuilder()
-    .withUrl("/chatHub")
+    .withUrl("https://localhost:7004/chatHub")
     .configureLogging(signalR.LogLevel.Information)
     .build();
 
   connection.start().catch(err => console.error(err.toString()));
 
-  connection.on("ReceiveMessage", function (user, message) {
-    appendMessage(user, message, 'incoming');
+
+  connection.on("SendedResponse",function(stat){
+	  
+	  
+  });
+
+
+  connection.on("ReceiveMessage", function (message,name) {
+    appendMessage(message,name,'incoming');
   });
 
   $("#chatIcon").click(function() {
@@ -30,7 +37,7 @@ $(document).ready(function() {
     var messageText = messageInput.val().trim();
 
     if (messageText !== '') {
-      connection.invoke("SendMessage", "User", messageText)
+      connection.invoke("SendMessage",messageText)
         .catch(err => console.error(err.toString()));
 
       appendMessage("You", messageText, 'outgoing');

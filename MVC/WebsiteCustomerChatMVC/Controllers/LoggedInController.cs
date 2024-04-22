@@ -5,18 +5,20 @@ using WccEntityFrameworkDriver.DatabaseEngineOperations.Interfaces;
 using WebsiteCustomerChatMVC.Models;
 using WebsiteCustomerChatConfiguration;
 using WccEntityFrameworkDriver.DatabaseEngineOperations.DataSets;
+using WebsiteCustomerChatMVC.SignarR;
 
 namespace WebsiteCustomerChatMVC.Controllers
 {
     public class LoggedInController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private ChatModule _chatModule;
         private IDBLogin db;
 
-        public LoggedInController(ILogger<HomeController> logger)
+        public LoggedInController(ILogger<HomeController> logger,ChatModule chatmodule)
         {
             _logger = logger;
-
+            _chatModule = chatmodule;
             string engine = Config.GetConfigValue("DatabaseEngine");
             if(engine == "mysql")
             {
@@ -40,6 +42,7 @@ namespace WebsiteCustomerChatMVC.Controllers
         [HttpPost]
         public async Task<IActionResult> LoggedIn(IFormCollection form)
         {
+            
             string Username = form["username"];
             string Password = form["password"];
 
@@ -49,6 +52,7 @@ namespace WebsiteCustomerChatMVC.Controllers
                 return Redirect("/?Badlogin=yes");
             }
 
+            
 
 
             return View();

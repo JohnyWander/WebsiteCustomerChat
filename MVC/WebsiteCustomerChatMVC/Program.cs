@@ -4,6 +4,9 @@ using WccEntityFrameworkDriver.DatabaseEngineOperations.Interfaces;
 using WebsiteCustomerChatMVC.ViewTostring;
 using WebsiteCustomerChatConfiguration;
 using Microsoft.AspNetCore.SignalR;
+using Microsoft.AspNetCore.Mvc.ApplicationParts;
+using WebsiteCustomerChatMVC.SignarR.Hubs;
+using WebsiteCustomerChatMVC.SignarR;
 
 namespace WebsiteCustomerChatMVC
 {
@@ -62,6 +65,7 @@ namespace WebsiteCustomerChatMVC
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddRazorPages();
             builder.Services.AddSignalR();
+            builder.Services.AddTransient<ChatModule>();
             builder.Services.AddCors(options => options.AddPolicy("CorsPolicy",
             builder =>
             {
@@ -111,10 +115,15 @@ namespace WebsiteCustomerChatMVC
           
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapHub<SignarR.ChatHub>("/Chathub");
+                endpoints.MapHub<ChatHub>("/Chathub");
             });
 
+            app.UseEndpoints(enpoints =>
+            {
+                enpoints.MapHub<AdminChatHub>("/ChatterHub");
+            });
 
+           
             app.Run();
         }
     }
