@@ -66,6 +66,7 @@ namespace WebsiteCustomerChatMVC
             builder.Services.AddRazorPages();
             builder.Services.AddSignalR();
             builder.Services.AddTransient<ChatModule>();
+            builder.Services.AddHttpContextAccessor();
             builder.Services.AddCors(options => options.AddPolicy("CorsPolicy",
             builder =>
             {

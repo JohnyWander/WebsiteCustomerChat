@@ -29,19 +29,25 @@
 
     public static class ChatEvents
     {
-        internal static event EventHandler<UserConnectedEventArgs> UserConnectedEvent;
-        internal static event EventHandler<UserTextMessageEventArgs> UserTextMessageEvent;
+        internal static event EventHandler<UserConnectedEventArgs> UserConnectedEvent; // Client to operators
+        internal static event EventHandler<UserTextMessageEventArgs> UserTextMessageEvent; // Client to operators
+
+        internal static event EventHandler<UserTextMessageEventArgs> OperatorTextMessageEvent;
 
         internal static void FireConnected(object sender,UserConnectedEventArgs e)
         {
             UserConnectedEvent?.Invoke(sender, e);
         }
 
-        internal static void FireText(object sender, UserTextMessageEventArgs e)
+        internal static void FireTextToOperator(object sender, UserTextMessageEventArgs e)
         {
             UserTextMessageEvent?.Invoke(sender, e);
         }
 
+        internal static void FireTextToClient(object sender,UserTextMessageEventArgs e)
+        {
+           OperatorTextMessageEvent?.Invoke(sender, e);
+        }
 
 
     }

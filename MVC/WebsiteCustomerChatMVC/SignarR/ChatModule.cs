@@ -20,8 +20,18 @@ namespace WebsiteCustomerChatMVC.SignarR
 
         public ChatModule(IHubContext<ChatHub> hubContext,IHubContext<AdminChatHub> adminContext)
         {
+
+            
+
+            ConfigureClientToOperatorEvents();
+            ConfigurOperatorToClientEvents();
             _hubContext = hubContext;
             _adminContext = adminContext;
+
+        }
+
+        private void ConfigureClientToOperatorEvents()
+        {
 
             ChatEvents.UserConnectedEvent += (object sender, UserConnectedEventArgs e) =>
             {
@@ -35,11 +45,19 @@ namespace WebsiteCustomerChatMVC.SignarR
                 _adminContext.Clients.All.SendAsync("NewMessage", e.ConnectionID, e.Text).Wait();
 
             };
-                     
+
         }
 
-        
-        
+        private void ConfigurOperatorToClientEvents()
+        {
+            ChatEvents.OperatorTextMessageEvent += (object sender, UserTextMessageEventArgs e) =>
+            {
+                _hubContext.Clients.Client(e.ConnectionID).SendAsync("ReceiveMessage", "Operator", e.Text);
+            };
+
+        }
+
+
 
     }
 }

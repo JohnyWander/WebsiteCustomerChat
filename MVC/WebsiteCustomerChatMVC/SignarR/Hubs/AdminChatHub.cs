@@ -17,6 +17,11 @@ namespace WebsiteCustomerChatMVC.SignarR.Hubs
            await Clients.All.SendAsync("NewClient", "new client");
         }
 
+        public async Task SendText(string ID,string text)
+        {
+            Debug.WriteLine("Operator responded:"+text);
+            ChatEvents.FireTextToClient(this, new UserTextMessageEventArgs(ID, text, UserTextMessageEventArgs.MessageType.NormalChat));
+        }
 
         public override async Task OnConnectedAsync()
         {
