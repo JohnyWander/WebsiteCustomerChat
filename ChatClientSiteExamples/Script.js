@@ -1,3 +1,5 @@
+var connectionId;
+
 $(document).ready(function() {
   const connection = new signalR.HubConnectionBuilder()
     .withUrl("https://localhost:7004/chatHub",
@@ -11,13 +13,24 @@ $(document).ready(function() {
     .configureLogging(signalR.LogLevel.Information)
     .build();
 
-  connection.start().catch(err => console.error(err.toString()));
-  var connectionId = connection.connectionId;
-   
-   if(getCookie("chatCookie")==""){	  
-console.log("No cookie");   
+  connection.start().then(() => {
+    console.log("Connection established");
+    
+    // Access the connectionId after the connection is established
+    var connectionId = connection.connectionId;
+    console.log("ConnectionId: " + connectionId);
+	  if(getCookie("chatCookie")=="")
+   {
   createCookie("chatCookie",connectionId,30);
+  //document.cookie = `"chatCookie=${connectionId}; expires=Thu, 01 Jan 2025 00:00:00 UTC; path=/;"`;
    }
+	
+}).catch((err) => {
+    console.error(err.toString());
+});
+ 
+   
+ 
   connection.on("SendedResponse",function(stat){
 	  
 	
