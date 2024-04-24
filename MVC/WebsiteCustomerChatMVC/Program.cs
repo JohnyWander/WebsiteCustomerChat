@@ -65,7 +65,7 @@ namespace WebsiteCustomerChatMVC
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddRazorPages();
             builder.Services.AddSignalR();
-            builder.Services.AddTransient<ChatModule>();
+            builder.Services.AddSingleton<ChatModule>();
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddCors(options => options.AddPolicy("CorsPolicy",
             builder =>
@@ -75,6 +75,17 @@ namespace WebsiteCustomerChatMVC
                        .SetIsOriginAllowed((host) => true)
                        .AllowCredentials();
             }));
+
+
+            
+                
+                var serviceProvider = builder.Services.BuildServiceProvider();
+                var hubContext = serviceProvider.GetRequiredService<IHubContext<ChatHub>>();
+                var adminContext = serviceProvider.GetRequiredService<IHubContext<AdminChatHub>>();
+
+                //builder.Services.AddSingleton(hubContext);
+                //builder.Services.AddSingleton(adminContext);
+            
 
 
             //builder.Services.AddScoped<IViewRenderer, ViewRenderer>();
@@ -123,6 +134,8 @@ namespace WebsiteCustomerChatMVC
             {
                 enpoints.MapHub<AdminChatHub>("/ChatterHub");
             });
+
+            app.Services.GetRequiredService<ChatModule>();
 
            
             app.Run();

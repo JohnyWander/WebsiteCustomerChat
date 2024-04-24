@@ -21,6 +21,7 @@ namespace WccEntityFrameworkDriver.DatabaseEngineOperations.Tables
         [Key]
         public int ChatID { get; set; }
 
+        public string ConnectionId { get; set; }
         public ICollection<Users> UsersResp { get; set; }
 
         public byte[] ConversationBlob { get; set; }

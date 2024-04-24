@@ -20,17 +20,26 @@ namespace WebsiteCustomerChatMVC.SignarR.Hubs
             _httpContextAccessor = httpContextAccessor;
         }
 
-        
+
         public override async Task OnConnectedAsync()
         {
-            var cookieValue = _httpContextAccessor.HttpContext.Request.Cookies["chatCookie"];
-            Debug.WriteLine(cookieValue);
-            
             string connectionId = Context.ConnectionId;
-            string clientID = Context.ConnectionId;
-           
+            var cookieValue = _httpContextAccessor.HttpContext.Request.Cookies["chatCookie"];
 
-            ChatEvents.FireConnected(this, new UserConnectedEventArgs(connectionId));
+            if (cookieValue != null)
+            {
+              ChatEvents.FireConnected(this, new UserConnectedEventArgs(connectionId,cookieValue,true));
+            }
+            else
+            {
+              ChatEvents.FireConnected(this, new UserConnectedEventArgs(connectionId));
+            }
+            
+
+        
+            
+            
+            
 
             await base.OnConnectedAsync();
         }
@@ -38,6 +47,7 @@ namespace WebsiteCustomerChatMVC.SignarR.Hubs
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             string connectionId = Context.ConnectionId;
+            ChatEvents.FireDisconnected(this,new UserConnectedEventArgs(connectionId));
             await base.OnDisconnectedAsync(exception);
         }
 

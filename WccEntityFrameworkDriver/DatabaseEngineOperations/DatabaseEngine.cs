@@ -13,10 +13,12 @@ using WccEntityFrameworkDriver.DatabaseEngineOperations.Interfaces;
 using WccEntityFrameworkDriver.DatabaseEngineOperations.Tables;
 using WccEntityFrameworkDriver.DatabaseEngineOperations.DataSets;
 using System.Reflection.Emit;
+using System.Web;
+using System.Text;
 
 namespace WccEntityFrameworkDriver.DatabaseEngineOperations
 {
-    public abstract class DatabaseEngine : DbContext, IDbInstallation,IDBcheckOnInit,IDBLogin
+    public abstract class DatabaseEngine : DbContext, IDbInstallation,IDBcheckOnInit,IDBLogin,IDbChatEngine
     {
 
         //public DbSet<Blog> Blogs { get; set; }
@@ -107,20 +109,9 @@ namespace WccEntityFrameworkDriver.DatabaseEngineOperations
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //  modelBuilder.Entity<Chats>().HasIndex(x=>x.)           
-
             ConfigureUsers(modelBuilder);
             ConfigureChats(modelBuilder);
-
-
-            ConfigureRelations(modelBuilder);
-
-          
-
-
-       
-                
-                
-
+            ConfigureRelations(modelBuilder);        
         }
 
         public Task CheckForDbOrCreate()
@@ -246,7 +237,43 @@ namespace WccEntityFrameworkDriver.DatabaseEngineOperations
            
         }
 
-        
+        public async Task PushChatHistoryToDb(string connectionID, string ChatData,DateTime DateStarted,DateTime DateEnded)
+        {
+            byte[] chatblob = Encoding.UTF8.GetBytes(ChatData);
+
+            Chats chat = this.chats.FirstOrDefault(x => x.ConnectionId == connectionID);
+            if (chat != null)
+            {
+                chatblob = chatblob.Concat(chat.ConversationBlob).ToArray();
+            }
+
+            await this.chats.AddAsync(new Chats
+            {
+                ConnectionId = connectionID,
+                ConversationBlob = chatblob,
+                TimeStarted = DateStarted,
+                TimeEnded = DateEnded
+
+            });
+            await this.SaveChangesAsync();
+        }
+
+
+        public string GetChatHistoryFromDb(string connectionIDfromCookie,string newId)
+        {
+           
+                Chats chat = this.chats.FirstOrDefault(x => x.ConnectionId == connectionIDfromCookie);
+               Debug.WriteLine(connectionIDfromCookie+" ++" +newId);
+                byte[] data = chat.ConversationBlob;
+
+
+                chat.ConnectionId = newId;
+                this.SaveChanges();
+
+                return Encoding.UTF8.GetString(data);
+            
+            
+        }
 
         // public Task CreateUser(string username,string password,)
 
