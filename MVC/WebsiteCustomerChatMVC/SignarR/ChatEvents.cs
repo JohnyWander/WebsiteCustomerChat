@@ -49,9 +49,10 @@
         internal static event EventHandler<UserConnectedEventArgs> UserConnectedEvent; // Client to operators
         internal static event EventHandler<UserConnectedEventArgs> UserConnectedWithCookie;
         internal static event EventHandler<UserTextMessageEventArgs> UserTextMessageEvent; // Client to operators
-
         internal static event EventHandler<UserConnectedEventArgs> UserDisconnectedEvent;
         
+
+
 
         internal static event EventHandler<UserTextMessageEventArgs> OperatorTextMessageEvent;
 

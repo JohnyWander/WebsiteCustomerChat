@@ -60,6 +60,8 @@ namespace WebsiteCustomerChatMVC.SignarR.Hubs
             await Clients.All.SendAsync("SendedResponse", message);
         }
 
+       // public async Task CheckOnline()
+
 
 
     }

@@ -36,6 +36,32 @@ $(document).ready(function() {
 	
   });
   
+  connection.on("LoadHistory",function(hist,newid){
+	  var lines = hist.split('\n');
+	  
+		var connectionId = connection.connectionId;
+	  
+	  createCookie("chatCookie",newid,30);  
+	 
+	  
+	  for(var l of lines){
+		  
+		  var cols = l.split('|');
+		  var target = cols[0];
+		  var type = cols[1];
+		  var data = cols[2];
+		  
+		  if(target=="ToOperator"){
+			  appendMessage("You", data, 'outgoing');
+		  }else{
+			  appendMessage("Operator",data,'incoming');
+		  }
+		  
+	  }
+	  
+	  
+  });
+  
   function getCookie(name) {
     var cookieName = name + "=";
     var decodedCookie = decodeURIComponent(document.cookie);
@@ -103,4 +129,9 @@ $(document).ready(function() {
     // Scroll to bottom
     $("#chatBox").scrollTop($("#chatBox")[0].scrollHeight);
   }
+  
+  function fetchHistory(history){
+	  
+  }
+  
 });
