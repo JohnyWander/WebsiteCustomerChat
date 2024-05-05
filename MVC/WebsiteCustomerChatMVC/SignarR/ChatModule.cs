@@ -66,9 +66,6 @@ namespace WebsiteCustomerChatMVC.SignarR
                 Debug.WriteLine("Client went out");
             };
 
-
-
-
             ChatEvents.UserTextMessageEvent += (object sender, UserTextMessageEventArgs e) =>
             {
                 ChatClients[e.ConnectionID].Messages.Add(new MessageBase(MessageBase.MessageType.text,MessageBase.MessageDirection.ToOperator, e.Text));
@@ -76,10 +73,37 @@ namespace WebsiteCustomerChatMVC.SignarR
 
             };
 
+
+            ChatEvents.UserNameChangeEvent += (object sender, UserNameChangeEventArgs e) =>
+            {
+                ChatClients[e.ConnectionID].DescribeMeAs = e.NewName;
+            };
+
+            ChatEvents.UserGetsOperatorName = () =>
+            {
+                return AdminClients.FirstOrDefault().Value.DescribeMeAs;
+                
+            };
+
         }
 
         private void ConfigurOperatorToClientEvents()
         {
+            ChatEvents.OperatorconnectedEvent += (object sender, UserConnectedEventArgs e) =>
+            {
+                AdminClients.Add(e.ConnectionID, new ConnectedClient(e.ConnectionID));
+            };
+
+            ChatEvents.OperatorDisconnectedEvent += (object sender, UserConnectedEventArgs e) =>
+            {
+                AdminClients.Remove(e.ConnectionID);
+            };
+
+            ChatEvents.OperatorNameChangeEvent += (object sender, UserNameChangeEventArgs e) =>
+            {
+                AdminClients[e.ConnectionID].DescribeMeAs = e.NewName;
+            };
+
             ChatEvents.OperatorTextMessageEvent += (object sender, UserTextMessageEventArgs e) =>
             {
                 ChatClients[e.ConnectionID].Messages.Add(new MessageBase(MessageBase.MessageType.text, MessageBase.MessageDirection.ToClient, e.Text));

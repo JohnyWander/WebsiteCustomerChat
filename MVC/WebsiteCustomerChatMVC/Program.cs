@@ -135,6 +135,11 @@ namespace WebsiteCustomerChatMVC
                 enpoints.MapHub<AdminChatHub>("/ChatterHub");
             });
 
+            app.UseEndpoints(enpoints =>
+            {
+                enpoints.MapHub<CheckIfOnlineHub>("/online");
+            });
+
             app.Services.GetRequiredService<ChatModule>();
 
            

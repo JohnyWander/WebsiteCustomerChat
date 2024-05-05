@@ -31,17 +31,23 @@ function sendText() {
 
 }
 
+function launchChat() {
 
-$(document).ready(function () {
+   var identifyMeAs = document.getElementById("identifyMeAs").value;
+
+
     const connection = new signalR.HubConnectionBuilder()
         .withUrl("/ChatterHub")
         .configureLogging(signalR.LogLevel.Information)
         .build();
 
-
+    
 
     connection.start().catch(err => console.error(err.toString()));
     conn = connection;
+
+    connection.invoke("ChangeMyName", identifyMeAs);
+
 
     connection.on("NewClient", (uid, message, name) => {
         var chatlist = document.getElementById("chatUsers");
@@ -56,11 +62,20 @@ $(document).ready(function () {
 
         bold(`"${uid}"`);
         AppendChat(`"${uid}"`, `"${Message}"`);
-        
+
 
 
     });
 
+
+
+
+
+
+}
+
+$(document).ready(function () {
+   
   
 
 

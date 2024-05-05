@@ -1,24 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Chat Interface</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Interface</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div id="chatIconContainer">
-    <img src="Group 115.png" alt="Chat Icon" id="chatIcon">
-  </div>
-  <div id="chatContainer">
-    <div id="chatBox">
-      <!-- Messages will be added dynamically here -->
+    <div id="chatIconContainer">
+        <img src="Group 115.png" alt="Chat Icon" id="chatIcon">
     </div>
-    <input type="text" id="messageInput" placeholder="Type a message...">
-    <button id="sendButton">Send</button>
-  </div>
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.4/signalr.min.js"></script>
-  <script src="script.js"></script>
+    <div id="chatContainer">
+       
+        <div id="chatBox">
+            <div id="OperatorDescription">Current chat operator is: </div>
+            <!-- Messages will be added dynamically here -->
+        </div>
+        <input type="text" id="messageInput" placeholder="Type a message...">
+        <button id="sendButton">Send</button>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/5.0.4/signalr.min.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

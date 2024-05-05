@@ -23,11 +23,16 @@ namespace WebsiteCustomerChatMVC.SignarR.Hubs
             ChatEvents.FireTextToClient(this, new UserTextMessageEventArgs(ID, text, UserTextMessageEventArgs.MessageType.NormalChat));
         }
 
+        public async Task ChangeMyName(string newName)
+        {
+            ChatEvents.FireOperatorNameChangeEvent(this, new UserNameChangeEventArgs(Context.ConnectionId, newName));
+        }
+
         public override async Task OnConnectedAsync()
         {
             string connectionId = Context.ConnectionId;
 
-
+            ChatEvents.FireOperatorConnected(this, new UserConnectedEventArgs(connectionId));
   
             await base.OnConnectedAsync();
         }
@@ -36,7 +41,7 @@ namespace WebsiteCustomerChatMVC.SignarR.Hubs
         {
             
             string connectionId = Context.ConnectionId;
-
+            ChatEvents.FireOperatorDisconnected(this,new UserConnectedEventArgs(connectionId));
 
 
             await base.OnDisconnectedAsync(exception);

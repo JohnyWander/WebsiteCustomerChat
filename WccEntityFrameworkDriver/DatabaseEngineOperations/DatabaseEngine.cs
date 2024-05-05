@@ -261,17 +261,21 @@ namespace WccEntityFrameworkDriver.DatabaseEngineOperations
 
         public string GetChatHistoryFromDb(string connectionIDfromCookie,string newId)
         {
-           
+            try
+            {
                 Chats chat = this.chats.FirstOrDefault(x => x.ConnectionId == connectionIDfromCookie);
-               Debug.WriteLine(connectionIDfromCookie+" ++" +newId);
+                Debug.WriteLine(connectionIDfromCookie + " ++" + newId);
                 byte[] data = chat.ConversationBlob;
-
 
                 chat.ConnectionId = newId;
                 this.SaveChanges();
 
                 return Encoding.UTF8.GetString(data);
-            
+            }
+            catch (NullReferenceException)
+            {
+                return string.Empty;
+            }
             
         }
 

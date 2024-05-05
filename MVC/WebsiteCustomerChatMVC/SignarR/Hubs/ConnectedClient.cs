@@ -11,6 +11,8 @@ namespace WebsiteCustomerChatMVC.SignarR.Hubs
 
         internal readonly string DataLocation;
 
+        internal string DescribeMeAs;
+
         internal List<MessageBase> Messages = new List<MessageBase>();
 
         internal DateTime StartDate = DateTime.Now;
