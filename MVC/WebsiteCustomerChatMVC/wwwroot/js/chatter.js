@@ -43,10 +43,12 @@ function launchChat() {
 
     
 
-    connection.start().catch(err => console.error(err.toString()));
+    connection.start().then(() => {
+        connection.invoke("ChangeMyName", identifyMeAs);
+    }).catch(err => console.error(err.toString()));
     conn = connection;
 
-    connection.invoke("ChangeMyName", identifyMeAs);
+   
 
 
     connection.on("NewClient", (uid, message, name) => {

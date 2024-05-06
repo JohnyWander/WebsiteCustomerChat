@@ -81,6 +81,7 @@ namespace WebsiteCustomerChatMVC.SignarR
 
             ChatEvents.UserGetsOperatorName = () =>
             {
+                
                 return AdminClients.FirstOrDefault().Value.DescribeMeAs;
                 
             };

@@ -61,9 +61,10 @@ namespace WebsiteCustomerChatMVC.SignarR.Hubs
             await Clients.All.SendAsync("SendedResponse", message);
         }
 
-        public async Task getOperatorName()
+        public string getOperatorName()
         {
-            await Clients.Client(Context.ConnectionId).SendAsync(ChatEvents.UserGetsOperatorName());
+            //await Clients.Client(Context.ConnectionId).SendAsync("",ChatEvents.UserGetsOperatorName());
+            return ChatEvents.UserGetsOperatorName();
         }
 
         // public async Task CheckOnline()

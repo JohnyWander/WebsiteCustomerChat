@@ -16,7 +16,7 @@ $(document).ready(function () {
     connection.start().then(() => {
         console.log("Connection established");
         connection.invoke("getOperatorName").then((result) => {
-            document.getElementById("OperatorDescription").innerHTML = "&nbsp" + result;
+            document.getElementById("OperatorDescription").innerHTML += "&nbsp" + result;
         });
         // Access the connectionId after the connection is established
         var connectionId = connection.connectionId;
