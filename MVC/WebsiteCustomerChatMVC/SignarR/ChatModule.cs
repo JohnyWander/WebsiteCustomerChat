@@ -3,116 +3,224 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using WebsiteCustomerChatMVC.SignarR.Hubs;
 using WebsiteCustomerChatMVC.SignarR.Hubs.Messages;
-using WccEntityFrameworkDriver.DatabaseEngineOperations;
-using WccEntityFrameworkDriver.DatabaseEngineOperations.Interfaces;
+
+using Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore;
+using WebsiteCustomerChatMVC.DatabaseNoEF.MySql;
+using System.Security.Cryptography;
+using System.Text.RegularExpressions;
+using System.Collections.Concurrent;
 
 namespace WebsiteCustomerChatMVC.SignarR
 {
     public class ChatModule
     {
-
-        private IHubContext<ChatHub> _hubContext;
-        private IHubContext<AdminChatHub> _adminContext;
-
         
+        
+        private readonly IHubContext<ChatHub> _hubContext;
+        private readonly IHubContext<AdminChatHub> _adminContext;
 
-        private IDictionary<string, ConnectedClient> ChatClients = new Dictionary<string, ConnectedClient>();
-        private IDictionary<string,ConnectedClient> AdminClients = new Dictionary<string, ConnectedClient>();
+       
 
-        private IDbChatEngine db = new MySQLengine();
-        public ChatModule(IHubContext<ChatHub> hubContext,IHubContext<AdminChatHub> adminContext)
+        private ConcurrentDictionary<string, ConnectedClient> ChatClients = new ConcurrentDictionary<string, ConnectedClient>();
+        private ConcurrentDictionary<string, ConnectedClient> AdminClients = new ConcurrentDictionary<string, ConnectedClient>();
+
+
+        public  string GenerateRandomToken(int length = 32)
         {
+            using (var rng = new RNGCryptoServiceProvider())
+            {
+                var byteArray = new byte[length];
+                rng.GetBytes(byteArray);
+                return Regex.Replace(Convert.ToBase64String(byteArray), "[^a-zA-Z0-9]", "");
+                
+            }
+        }
+
+        public async Task<string> GetClientToken(string AccessToken)
+        {
+            await Task.Delay(3000);
+            return this.ChatClients[AccessToken].AccessToken;
+        }
+
+
+        SemaphoreSlim sem = new SemaphoreSlim(1);
+        internal MySqlChatEngine dbnoef;
+        public ChatModule(IHubContext<ChatHub> ch,IHubContext<AdminChatHub> ach)
+        {
+            _hubContext = ch;
+            _adminContext = ach;
+            this.dbnoef = new MySqlChatEngine();
+        }
+
+        internal void StartDBConnection()
+        {
+            dbnoef = new MySqlChatEngine();
+        }
+
+        internal void StopDbconnection()
+        {
+            dbnoef.Dispose();
+        }
+
+        internal async Task StopDbConnectionAsync()
+        {
+            await dbnoef.DisposeAsync();
+        }
+
+        internal async Task RecreateConnectionAsync()
+        {
+            if(dbnoef is not null) { 
+            await dbnoef.DisposeAsync();
+            }
+            dbnoef = new MySqlChatEngine();
+        }
+
+    
+     
+        internal async Task UserConnected(string connectionID,string IP)
+        {
+            await UserConnected(connectionID, "", false, IP);
+        }
+
+        internal async Task UserConnected(string connectionID)
+        {
+            await UserConnected(connectionID, "", false, "");
+        }
+
+        internal async Task UserConnected(string connectionID, string cookieToken, bool HasCookie,string IP)
+        {
+           
+
+            if (HasCookie && cookieToken != "" && cookieToken != " ")
+            {
+                // ConnectedClient ClientFromBefore = ChatClients[cookieToken];         
+                ConnectedClient ClientFromBefore;
+                bool exists = ChatClients.TryGetValue(cookieToken, out ClientFromBefore);
+                  
+                if(!exists) { 
+                    ClientFromBefore = new ConnectedClient(connectionID, cookieToken, IP, true);
+                    ChatClients.TryAdd(cookieToken,ClientFromBefore);
+                }
+
+
+                ClientFromBefore.IsFromReconnect = true;
+                ClientFromBefore.IP = IP;
+                ClientFromBefore.ConnectionID = connectionID;
+             
+                await _adminContext.Clients.All.SendAsync("reconClient", cookieToken, connectionID);
+
+                
+                
+                string hist = await GetChatHistory(cookieToken);
+                Console.WriteLine("SENDING HIST");
+                await _hubContext.Clients.Client(connectionID).SendAsync("LoadHistory", hist, connectionID);
+                
+            }
+            else
+            {
+                ConnectedClient client = new ConnectedClient(connectionID,GenerateRandomToken(),IP);
+                
+                ChatClients.TryAdd(client.AccessToken, client);
+                
+                await _adminContext.Clients.All.SendAsync("NewClient", client.AccessToken, "xsd");
+                await _hubContext.Clients.Client(connectionID).SendAsync("SetCookie", $"{client.AccessToken}");
+            }
+        }
+
+        internal async Task UserDisconnected(string connectionID)
+        {
+            Console.WriteLine("DISC");
+            ConnectedClient client=null;
+            
+            client = ChatClients.FirstOrDefault(x => x.Value.ConnectionID == connectionID).Value;            
+            await this.dbnoef.PushChatHistoryToDb(connectionID, client);
+            
+            
+        }
+
+        internal async Task<string> GetChatHistory(string AccessToken)
+        {
+            ConnectedClient client=null;
+
+                client = ChatClients[AccessToken];
 
             
-
-            ConfigureClientToOperatorEvents();
-            ConfigurOperatorToClientEvents();
-            _hubContext = hubContext;
-            _adminContext = adminContext;
-
-            if(_adminContext is null)
+            try
             {
-                throw new Exception("SHIT");
+                return await dbnoef.GetChatHistoryFromDb(client);
+            }
+            finally
+            {
+                
             }
 
-            Debug.WriteLine("Module constructor finished");
 
         }
 
-        private void ConfigureClientToOperatorEvents()
+        internal async Task<string> GetNotSavedChanges()
         {
-
-            ChatEvents.UserConnectedEvent += (object sender, UserConnectedEventArgs e) =>
-            {
-                ChatClients.Add(e.ConnectionID, new ConnectedClient(e.ConnectionID));
-
-                if (e.HasCookie && e.CookieConnId!="" && e.CookieConnId!=" ")
-                {
-                   string History = db.GetChatHistoryFromDb(e.CookieConnId, e.ConnectionID);
-                    _hubContext.Clients.Client(e.ConnectionID).SendAsync("LoadHistory",History,e.ConnectionID);
-                    _adminContext.Clients.Client(e.ConnectionID).SendAsync("NewClient", e.ConnectionID, "").Wait();
-                    Debug.WriteLine("reconnected");
-                }
-                else
-                {
-                    _adminContext.Clients.All.SendAsync("NewClient", e.ConnectionID, "xsd").Wait() ;
-                    Debug.WriteLine("FIRST CONN");
-                }
-            };
-
-            ChatEvents.UserDisconnectedEvent += (object sender, UserConnectedEventArgs e) =>
-            {
-                db.PushChatHistoryToDb(e.ConnectionID, ChatClients[e.ConnectionID].ExportMessages(), ChatClients[e.ConnectionID].StartDate,DateTime.Now).Wait();
-                Debug.WriteLine("Client went out");
-            };
-
-            ChatEvents.UserTextMessageEvent += (object sender, UserTextMessageEventArgs e) =>
-            {
-                ChatClients[e.ConnectionID].Messages.Add(new MessageBase(MessageBase.MessageType.text,MessageBase.MessageDirection.ToOperator, e.Text));
-                _adminContext.Clients.All.SendAsync("NewMessage", e.ConnectionID, e.Text).Wait();
-
-            };
-
-
-            ChatEvents.UserNameChangeEvent += (object sender, UserNameChangeEventArgs e) =>
-            {
-                ChatClients[e.ConnectionID].DescribeMeAs = e.NewName;
-            };
-
-            ChatEvents.UserGetsOperatorName = () =>
-            {
-                
-                return AdminClients.FirstOrDefault().Value.DescribeMeAs;
-                
-            };
-
+            return "";
         }
 
-        private void ConfigurOperatorToClientEvents()
+
+        internal async Task UserTextMessage(string Text, string ConnectionID)
         {
-            ChatEvents.OperatorconnectedEvent += (object sender, UserConnectedEventArgs e) =>
-            {
-                AdminClients.Add(e.ConnectionID, new ConnectedClient(e.ConnectionID));
-            };
-
-            ChatEvents.OperatorDisconnectedEvent += (object sender, UserConnectedEventArgs e) =>
-            {
-                AdminClients.Remove(e.ConnectionID);
-            };
-
-            ChatEvents.OperatorNameChangeEvent += (object sender, UserNameChangeEventArgs e) =>
-            {
-                AdminClients[e.ConnectionID].DescribeMeAs = e.NewName;
-            };
-
-            ChatEvents.OperatorTextMessageEvent += (object sender, UserTextMessageEventArgs e) =>
-            {
-                ChatClients[e.ConnectionID].Messages.Add(new MessageBase(MessageBase.MessageType.text, MessageBase.MessageDirection.ToClient, e.Text));
-                _hubContext.Clients.Client(e.ConnectionID).SendAsync("ReceiveMessage", "Operator", e.Text);
-            };
-
+            ConnectedClient client = ChatClients.FirstOrDefault(x => x.Value.ConnectionID == ConnectionID).Value;
+              //ConnectedClient client = ChatClients[Token]; ;
+            client.Messages.Add(new MessageBase(MessageBase.MessageType.text, MessageBase.MessageDirection.ToOperator, Text));
+           await _adminContext.Clients.All.SendAsync("NewMessage", client.AccessToken, $"ToOperator|text|{Text}");
         }
 
+        internal async Task UserNameChange(string ConnectionID, string NewName)
+        {
+            ChatClients[ConnectionID].DescribeMeAs = NewName;
+        }
+
+        internal async Task<string> UserGetsOperatorName()
+        {
+            string name = AdminClients?.FirstOrDefault().Value.DescribeMeAs;
+            if (name == null)
+                return "None";
+            else
+            {
+                return name;
+            }
+        }
+
+
+
+        /// ///////////// OP
+
+        internal async Task OperatorConnected(string ConnectionID)
+        {
+            AdminClients.TryAdd(ConnectionID, new ConnectedClient(ConnectionID));
+        }
+
+        internal async Task OperatorDisconnected(string ConnectionID) 
+        {
+          //  AdminClients.TryRemove(ConnectionID);
+        }
+
+        internal async Task OperatorNameChange(string ConnectionID, string NewName)
+        {
+            AdminClients[ConnectionID].DescribeMeAs = NewName;
+        }
+
+        internal async Task<string> GetOperatorExsistingWorkspace()
+        {
+            return await dbnoef.GetOperatorWorkspace();
+        }
+
+        internal async Task OperatorTextMessage(string Token,string Text)
+        {
+            //ChatClients[ConnectionID].Messages.Add(new MessageBase(MessageBase.MessageType.text, MessageBase.MessageDirection.ToClient, Text));
+            ConnectedClient client = ChatClients[Token];
+
+            client.Messages.Add(new MessageBase(MessageBase.MessageType.text, MessageBase.MessageDirection.ToClient, Text));
+            await  _hubContext.Clients.Client(client.ConnectionID).SendAsync("ReceiveMessage", "Operator", Text);
+        }
+
+  
 
 
     }

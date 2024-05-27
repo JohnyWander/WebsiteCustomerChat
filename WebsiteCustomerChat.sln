@@ -5,13 +5,11 @@ VisualStudioVersion = 17.5.33530.505
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebsiteCustomerChatMVC", "MVC\WebsiteCustomerChatMVC\WebsiteCustomerChatMVC.csproj", "{7153FF38-DBAE-4910-AD12-0B1FE874A626}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WccEntityFrameworkDriver", "WccEntityFrameworkDriver\WccEntityFrameworkDriver.csproj", "{09F6CFEB-BFDC-4E7A-90BF-4AAE5E8806FC}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebsiteCustomerChatConfiguration", "WebsiteCustomerChatConfiguration\WebsiteCustomerChatConfiguration.csproj", "{7DB94D24-BD5C-4154-BC41-310DD18961CB}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConfigurationTests", "Tests\ConfigurationTests\ConfigurationTests.csproj", "{7A361140-CEB1-40DF-AC38-962923F864E7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WccEntityFrameworkDriverTests", "Tests\WccEntityFrameworkTests\WccEntityFrameworkDriverTests\WccEntityFrameworkDriverTests.csproj", "{1E1CD3D1-9542-49D1-ADB8-A83797FED0C0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WccEntityFrameworkDriverTests", "Tests\WccEntityFrameworkTests\WccEntityFrameworkDriverTests\WccEntityFrameworkDriverTests.csproj", "{1E1CD3D1-9542-49D1-ADB8-A83797FED0C0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +21,6 @@ Global
 		{7153FF38-DBAE-4910-AD12-0B1FE874A626}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7153FF38-DBAE-4910-AD12-0B1FE874A626}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7153FF38-DBAE-4910-AD12-0B1FE874A626}.Release|Any CPU.Build.0 = Release|Any CPU
-		{09F6CFEB-BFDC-4E7A-90BF-4AAE5E8806FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{09F6CFEB-BFDC-4E7A-90BF-4AAE5E8806FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{09F6CFEB-BFDC-4E7A-90BF-4AAE5E8806FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{09F6CFEB-BFDC-4E7A-90BF-4AAE5E8806FC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7DB94D24-BD5C-4154-BC41-310DD18961CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7DB94D24-BD5C-4154-BC41-310DD18961CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7DB94D24-BD5C-4154-BC41-310DD18961CB}.Release|Any CPU.ActiveCfg = Release|Any CPU

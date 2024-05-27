@@ -15,10 +15,12 @@ using WccEntityFrameworkDriver.DatabaseEngineOperations.DataSets;
 using System.Reflection.Emit;
 using System.Web;
 using System.Text;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using System.Linq.Expressions;
 
 namespace WccEntityFrameworkDriver.DatabaseEngineOperations
 {
-    public abstract class DatabaseEngine : DbContext, IDbInstallation,IDBcheckOnInit,IDBLogin,IDbChatEngine
+    public abstract class DatabaseEngine : DbContext, IDbInstallation,IDBcheckOnInit,IDBLogin,IDbChatEngineRead,IDbChatEngineWrite
     {
 
         //public DbSet<Blog> Blogs { get; set; }
@@ -30,15 +32,20 @@ namespace WccEntityFrameworkDriver.DatabaseEngineOperations
 
         public DbSet<Roles> roles { get; set; }
 
-
+        SemaphoreSlim dbChangesSync = new SemaphoreSlim(1);
         public DatabaseEngine()
         {
-
+           
             
             
         }
 
-        
+        public async Task RecreateConnection()
+        {
+            
+            await this.Database.CloseConnectionAsync();
+            await this.Database.OpenConnectionAsync();
+        }
 
         protected abstract override void OnConfiguring(DbContextOptionsBuilder options);
 
@@ -239,48 +246,99 @@ namespace WccEntityFrameworkDriver.DatabaseEngineOperations
 
         public async Task PushChatHistoryToDb(string connectionID, string ChatData,DateTime DateStarted,DateTime DateEnded)
         {
-            byte[] chatblob = Encoding.UTF8.GetBytes(ChatData);
+            
+            
 
-            Chats chat = this.chats.FirstOrDefault(x => x.ConnectionId == connectionID);
+            //await dbChangesSync.WaitAsync();
+            this.ChangeTracker.AutoDetectChangesEnabled = false;
+            byte[] chatblob = Encoding.UTF8.GetBytes(ChatData);                      
+            Chats chat = await this.chats.FirstOrDefaultAsync(x => x.ConnectionId == connectionID);
+
             if (chat != null)
             {
                 chatblob = chatblob.Concat(chat.ConversationBlob).ToArray();
+
+
+                await this.Database.ExecuteSqlRawAsync("UPDATE chats set ConversationBlob = {0} where connectionId = {1}",chatblob, connectionID );
+            }
+            else
+            {
+                await this.Database.ExecuteSqlRawAsync("INSERT INTO chats (connectionId,ConversationBlob, TimeStarted, TimeEnded) VALUES ({0},{1},{2},{3})", connectionID,chatblob,DateStarted,DateEnded );
+
             }
 
-            await this.chats.AddAsync(new Chats
-            {
-                ConnectionId = connectionID,
-                ConversationBlob = chatblob,
-                TimeStarted = DateStarted,
-                TimeEnded = DateEnded
 
-            });
+            /*
+            if (chat != null)
+            {
+                chatblob = chatblob.Concat(chat.ConversationBlob).ToArray();
+                chat.ConversationBlob = chatblob;
+                this.Entry(chat).State = EntityState.Modified;
+            }
+            else
+            {
+                
+             
+                
+               
+
+            }
+            
             await this.SaveChangesAsync();
+            dbChangesSync.Release();
+   */
         }
 
 
-        public string GetChatHistoryFromDb(string connectionIDfromCookie,string newId)
+        public async Task<string> GetChatHistoryFromDb(string connectionIDfromCookie, string newId)
         {
             try
             {
-                Chats chat = this.chats.FirstOrDefault(x => x.ConnectionId == connectionIDfromCookie);
-                Debug.WriteLine(connectionIDfromCookie + " ++" + newId);
-                byte[] data = chat.ConversationBlob;
-
-                chat.ConnectionId = newId;
-                this.SaveChanges();
-
-                return Encoding.UTF8.GetString(data);
+                Console.WriteLine(connectionIDfromCookie + "BRUHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
+                
+                string hist = await MakeChanges(connectionIDfromCookie, newId);
+              
+                return hist;
             }
-            catch (NullReferenceException)
+            catch
             {
-                return string.Empty;
+                // try 3 times more and wait every time 2 secs
+                for (int i = 0; i <= 3; i++)
+                {
+                    try
+                    {
+                        await Task.Delay(5000);
+                        string hist = await MakeChanges(connectionIDfromCookie, newId);
+
+                        return hist;
+                    }
+                    catch
+                    {
+                        continue;
+                    }
+                }
+                throw;
             }
-            
+           
+ 
         }
 
-        // public Task CreateUser(string username,string password,)
+        public async Task<string> MakeChanges(string connectionIDfromCookie,string newId)
+        {
+            
+            
+            Chats chat =await chats.FirstOrDefaultAsync(x => x.ConnectionId == connectionIDfromCookie);
+            Debug.WriteLine(connectionIDfromCookie + " ++" + newId);
+            byte[] data = chat.ConversationBlob;
+            Console.WriteLine("DATA BLOB LENGTH:" + data.Length);
+            
 
+            await this.Database.ExecuteSqlRawAsync("UPDATE chats set connectionId = {0} where connectionId = {1}",newId, connectionIDfromCookie);
+
+            //await this.SaveChangesAsync();
+
+            return Encoding.UTF8.GetString(data);
+        }
 
 
 

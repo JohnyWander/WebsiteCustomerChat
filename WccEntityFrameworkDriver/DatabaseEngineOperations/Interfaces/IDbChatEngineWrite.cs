@@ -6,11 +6,15 @@ using System.Threading.Tasks;
 
 namespace WccEntityFrameworkDriver.DatabaseEngineOperations.Interfaces
 {
-    public interface IDbChatEngine
+    public interface IDbChatEngineWrite
     {
 
         public Task PushChatHistoryToDb(string connectionID, string ChatData, DateTime DateStarted, DateTime DateEnded);
 
-        public string GetChatHistoryFromDb(string connectionIDfromCookie,string newId);
+      
+
+        public void Dispose();
+        public ValueTask DisposeAsync();
+
     }
 }

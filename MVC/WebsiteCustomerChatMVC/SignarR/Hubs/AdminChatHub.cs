@@ -5,35 +5,64 @@ namespace WebsiteCustomerChatMVC.SignarR.Hubs
 {
     public class AdminChatHub : Hub
     {
+        ChatModule _chatModule;
+
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public AdminChatHub(IHttpContextAccessor httpContextAccessor, ChatModule module)
+        {
+            _httpContextAccessor = httpContextAccessor;
+            _chatModule = module;
+            
+        
+        }
+
         private bool Authorized(string Token)
         {
             
             return false;
 
         }
-
+        
         public async Task NewClient(string SyncData)
         {
+          /*  //check if client is from reconnect - 
+            string cookie=ChatEvents.CheckIfClientReconnected();
+            if(cookie != null)
+            {
+                Debug.WriteLine(cookie);
+                await Clients.All.SendAsync("reconClient");
+            }
+          */
            await Clients.All.SendAsync("NewClient", "new client");
         }
-
+        
         public async Task SendText(string ID,string text)
         {
             Debug.WriteLine("Operator responded:"+text);
-            ChatEvents.FireTextToClient(this, new UserTextMessageEventArgs(ID, text, UserTextMessageEventArgs.MessageType.NormalChat));
+            await _chatModule.OperatorTextMessage(ID, text);          
         }
 
         public async Task ChangeMyName(string newName)
-        {
-            ChatEvents.FireOperatorNameChangeEvent(this, new UserNameChangeEventArgs(Context.ConnectionId, newName));
+        {           
+            await _chatModule.OperatorNameChange(Context.ConnectionId,newName);
         }
+
+        public async Task<string> GetExistingWorkspace()
+        {
+
+            return await _chatModule.GetOperatorExsistingWorkspace();
+        }
+
+        public async Task<string> GetNotSavedChanges()
+        {
+            return "";
+        }
+
 
         public override async Task OnConnectedAsync()
         {
             string connectionId = Context.ConnectionId;
-
-            ChatEvents.FireOperatorConnected(this, new UserConnectedEventArgs(connectionId));
-  
+            await  _chatModule.OperatorConnected(connectionId);       
             await base.OnConnectedAsync();
         }
 
@@ -41,9 +70,7 @@ namespace WebsiteCustomerChatMVC.SignarR.Hubs
         {
             
             string connectionId = Context.ConnectionId;
-            ChatEvents.FireOperatorDisconnected(this,new UserConnectedEventArgs(connectionId));
-
-
+            await _chatModule.OperatorDisconnected(connectionId);          
             await base.OnDisconnectedAsync(exception);
         }
     }

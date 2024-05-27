@@ -5,13 +5,13 @@ using WebsiteCustomerChatMVC.Models;
 using Microsoft.AspNetCore.Components.RenderTree;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using WccEntityFrameworkDriver.DatabaseEngineOperations;
-using WccEntityFrameworkDriver.DatabaseEngineOperations.Interfaces;
+
 using Microsoft.CodeAnalysis.Scripting.Hosting;
 using WebsiteCustomerChatConfiguration;
 using System.Reflection;
 using Org.BouncyCastle.Crypto.Generators;
 using System.Runtime.CompilerServices;
+using WebsiteCustomerChatMVC.DatabaseNoEF.MySql;
 
 namespace WebsiteCustomerChatMVC.Models
 {
@@ -33,7 +33,8 @@ namespace WebsiteCustomerChatMVC.Models
         private string dbuser;
         private string dbuserpassword;
 
-        internal IDbInstallation DBengine;
+        internal MysqlUserEngine MysqlUserEngine;
+        internal MySqlInstallEngine MysqlInstallEngine;
 
         internal bool ConfigOK;
         internal bool DatabaseOK;
@@ -50,9 +51,9 @@ namespace WebsiteCustomerChatMVC.Models
             
             if(dbengine == "sqlite")
             {
-                sqlitedbFile = form["sqlitedbFile"];
-                DBengine = new SQLITEengine(sqlitedbFile);
-                
+                //   sqlitedbFile = form["sqlitedbFile"];
+                //  DBengine = new SQLITEengine(sqlitedbFile);
+                throw new NotImplementedException("sqlite coming soon"); // TODO: sqlite support
             }
             else if(dbengine == "mysql")
             {
@@ -62,8 +63,8 @@ namespace WebsiteCustomerChatMVC.Models
                 dbuser = form["user"];
                 dbuserpassword = form["dbuserpassword"];
 
-                DBengine = new MySQLengine(server,port,dbname,dbuser,dbuserpassword);
-                
+                //  MysqlUserEngine = new MysqlBase(server, port, dbname, dbuser, dbuserpassword) as MysqlUserEngine;
+                this.MysqlInstallEngine = new MySqlInstallEngine(server, port, dbname, dbuser, dbuserpassword);
             }
             /*
 
@@ -121,13 +122,13 @@ namespace WebsiteCustomerChatMVC.Models
         {
             try
             {
-                
-                await DBengine.CheckForDbOrCreate();
+
+                await this.MysqlInstallEngine.EnsureExistanceOrCreate(dbname);
                 this.DatabaseOK = true;
                 return "Success";
             }catch(Exception ex)
             {
-                return $"DB creation failed with exception -{ex.GetType().Name} {ex.Message} {ex.InnerException.GetType().Name} {ex.InnerException.Message}";
+                return $"DB creation failed with exception -{ex.GetType().Name} {ex.Message} ";
             }
         }
 
@@ -135,11 +136,17 @@ namespace WebsiteCustomerChatMVC.Models
         {
             try
             {
-                await DBengine.CreateAdminAccount(this.AdminUsername, this.AdminPassword);
+                MysqlUserEngine en = new MysqlUserEngine();
+                await en.CreateAdminAccount(this.AdminUsername, this.AdminPassword);
                 this.AdminOK = true;
                 return "Success";
             }catch(Exception ex)
             {
+                string mes = $"Error when creating Administrator account -{ex.GetType().Name} {ex.Message} {ex.InnerException.GetType().Name} {ex.InnerException.Message}";
+                if (ex.InnerException.InnerException.Message != null)
+                {
+                    mes += " " + ex.InnerException.InnerException.Message;
+                }
                 return $"Error when creating Administrator account -{ex.GetType().Name} {ex.Message} {ex.InnerException.GetType().Name} {ex.InnerException.Message}";
             }
 

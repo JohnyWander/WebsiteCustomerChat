@@ -198,7 +198,7 @@ namespace WebsiteCustomerChatConfiguration
                     name:"DatabaseName",
                     value:"",
                     description:"Name of the database or the database file location path for sqlite"
-                
+
                 ),
             new ConfigData
                 (
@@ -206,7 +206,7 @@ namespace WebsiteCustomerChatConfiguration
                     value:"",
                     description:"User used to login to the database, not used for sglite engine."
                 ),
-                           
+
             new ConfigData
                 (
                     name:"DatabasePassword",
@@ -225,6 +225,24 @@ namespace WebsiteCustomerChatConfiguration
                     value:"3306",
                     description:"Port on which database listens",
                     constrains: (_)=>IsDecimal()
+                ),
+           new ConfigData
+               (
+                    name:"Pfx certificate Path",
+                    value:"none",
+                    description:"by default uses asp net self signed certificate + app can run in reverse proxy"
+               ),
+            new ConfigData
+               (
+                    name:"Certificate password",
+                    value:"",
+                    description:"Password to cert"
+               ),
+            new ConfigData
+                (
+                    name:"ListenOn",
+                    value:"https://localhost",
+                    description:"endpoint to listen on like - https://example.com:443"
                 )
             
 

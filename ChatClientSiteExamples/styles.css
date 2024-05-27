@@ -24,6 +24,7 @@
   overflow: hidden;
   display: none;
   animation: slideInRight 0.5s ease;
+	z-index:100000000000;
 }
 
 #chatBox {

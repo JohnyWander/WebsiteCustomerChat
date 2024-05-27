@@ -12,6 +12,7 @@
     height:100%;
     float:left;
     border:1px solid black;
+    overflow-y:scroll;
 }
 
 
@@ -35,3 +36,29 @@
 
 }
 
+.conversation {
+    overflow-y: scroll;
+    height: 100%;
+}
+
+
+.text {
+    width: 70%;
+    border: 1px solid;
+    padding: 10px;
+    margin-bottom: 10px;
+    margin-left: 5px;
+    border-radius: 10px;
+}
+.client {
+    float: right;
+    margin-right: 5px;
+    background-color: #49e0fa;
+}
+
+.operator {
+    color: white;
+    background-color: #0084ff;
+    float: left;
+    margin-left: 5px;
+}
