@@ -18,6 +18,11 @@ namespace WebsiteCustomerChatMVC
     {
         public static void Init(out bool ConfigExists)
         {
+#if RELEASE
+
+           
+#endif
+
             ConfigExists = File.Exists(Config.configFilename);
             if (ConfigExists)
             {
@@ -76,8 +81,8 @@ namespace WebsiteCustomerChatMVC
                        .AllowCredentials();
             }));
 
-            if (!builder.Environment.IsDevelopment())
-            {
+          //  if (!builder.Environment.IsDevelopment())
+           // {
                 
                
                 if (IsInstalled) {
@@ -96,15 +101,9 @@ namespace WebsiteCustomerChatMVC
                             options.ConfigureEndpointDefaults(listenOptions =>
                             listenOptions.UseHttps(httpsConnectionAdapterOptions)));
                         }
-                }
+               // }
 
 
-                ConfigData endpoint = Config.ParsedConfiguration.FirstOrDefault(c => c.Name == "ListenOn");
-
-                if(endpoint.Value != null && endpoint.Value != "")
-                {
-                //    builder.WebHost.UseUrls(endpoint.Value);
-                } // or asp net defaults
 
             }
 
@@ -113,7 +112,7 @@ namespace WebsiteCustomerChatMVC
 
             //builder.Services.AddScoped<IViewRenderer, ViewRenderer>();
             var app = builder.Build();
-
+            
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
