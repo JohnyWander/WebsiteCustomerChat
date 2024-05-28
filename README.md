@@ -25,3 +25,22 @@ Installation
 - Configure database
 ![image](https://github.com/JohnyWander/WebsiteCustomerChat/assets/98389805/e81d58a4-c530-47c7-9beb-d88d8a45285e)
 
+<h2 id="proxy">Setting up proxy for application</h2>
+
+1. lUse chat server with command line
+--urlshttps://<server name/ip/localhost>:<port to listen on>
+
+-Apache 
+
+create virtualhost on your server domain/subdomain name or ip
+<VirtualHost 10.10.10.10:443>
+SSLProxyEngine On
+ProxyPass / https://localhost:5000/
+ProxyPassReverse / https://localhost:5000/
+ #-- other ssl config
+
+
+
+
+</VirtualHost>
+
