@@ -32,15 +32,15 @@ Installation
 
 -Apache 
 
-create virtualhost on your server domain/subdomain name or ip
-<VirtualHost 10.10.10.10:443>
-SSLProxyEngine On
-ProxyPass / https://localhost:5000/
-ProxyPassReverse / https://localhost:5000/
- #-- other ssl config
+create virtualhost on your server domain/subdomain name or ip<br>
+<VirtualHost 10.10.10.10:443><br>
+SSLProxyEngine On<br>
+ProxyPass / https://localhost:5000/<br>
+ProxyPassReverse / https://localhost:5000/<br>
+ #-- other ssl config<br>
 
 
 
 
-</VirtualHost>
+</VirtualHost><br>
 
