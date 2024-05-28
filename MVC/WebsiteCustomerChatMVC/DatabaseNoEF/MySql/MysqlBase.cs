@@ -32,6 +32,8 @@ namespace WebsiteCustomerChatMVC.DatabaseNoEF.MySql
          
         }
 
+       
+
         public MysqlBase(string server,string port,string dbname, string dbuser, string dbpassword)
         {
         

@@ -60,7 +60,27 @@ namespace WebsiteCustomerChatMVC.DatabaseNoEF.MySql
                 }
                 else
                 {
-                    throw new Exception("DB ALREADY EXISTS");
+                    await check.DisposeAsync();
+                    r.DisposeAsync();
+
+                    MySqlCommand createDB = new MySqlCommand($"use {dbname};", _connection);
+
+
+
+                    await createDB.ExecuteNonQueryAsync();
+                    await createDB.DisposeAsync();
+
+                    await CreateUsersTable();
+                    await CreateRolesTable();
+                    await CreatePermissionsTable();
+                    await CreateUserRolesTable();
+                    await CreateRolePermissionsTable();
+                    await CreateChatsTable();
+                    await AddDefaultPermissions();
+                    await AddDefaultRoles();
+                    await AddDefaultPermsToRoles();
+
+                    return "OK";
                 }
 
                 
