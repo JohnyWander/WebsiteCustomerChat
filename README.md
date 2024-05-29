@@ -39,8 +39,9 @@ ProxyPass / https://localhost:5000/<br>
 ProxyPassReverse / https://localhost:5000/<br>
  #-- other ssl config<br>
 
-
-
-
 </VirtualHost><br>
+
+<br>
+
+Page site chat example ChatClientSiteExamples directory, configure it for your needs - (chat creator coming soon)
 
