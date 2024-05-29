@@ -56,6 +56,14 @@ namespace WebsiteCustomerChatMVC
             builder.Services.AddControllersWithViews();
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddRazorPages();
+            builder.Services.AddDistributedMemoryCache();
+            builder.Services.AddSession(options =>
+            {
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+                options.IdleTimeout = TimeSpan.FromMinutes(20);
+            });
+
             builder.Services.AddSignalR(hubOptions =>
             {
                 hubOptions.EnableDetailedErrors = true;
@@ -93,7 +101,7 @@ namespace WebsiteCustomerChatMVC
                             var httpsConnectionAdapterOptions = new HttpsConnectionAdapterOptions
                             {
                                 SslProtocols = System.Security.Authentication.SslProtocols.Tls12,
-                                ClientCertificateMode = ClientCertificateMode.AllowCertificate,
+                                ClientCertificateMode = ClientCertificateMode.NoCertificate,
                                 ServerCertificate = new X509Certificate2(certConf.Value, certPass.Value)
                             };
 
@@ -131,6 +139,7 @@ namespace WebsiteCustomerChatMVC
             app.UseStaticFiles();
             
             app.UseRouting();
+            app.UseSession();
 
             app.UseAuthorization();
 
@@ -154,6 +163,7 @@ namespace WebsiteCustomerChatMVC
 
 
             app.UseCors("CorsPolicy");
+            
           
             app.UseEndpoints(endpoints =>
             {

@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Web;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Session;
 using System.Diagnostics;
 using WebsiteCustomerChatMVC.Models;
 using WebsiteCustomerChatConfiguration;
 using WebsiteCustomerChatMVC.SignarR;
 using WebsiteCustomerChatMVC.DatabaseNoEF.MySql;
 using WebsiteCustomerChatMVC.DataSets;
+using Mysqlx.Session;
 
 
 namespace WebsiteCustomerChatMVC.Controllers
@@ -30,7 +33,17 @@ namespace WebsiteCustomerChatMVC.Controllers
         public IActionResult LoggedIn()
         {
 
-            return View();
+            if (HttpContext.Session.GetInt32("authenticated") == 1)
+            {
+                return View();
+            }
+            else
+            {
+                return StatusCode(403);
+            }
+
+
+            
         }
 
         [HttpPost]
@@ -54,8 +67,7 @@ namespace WebsiteCustomerChatMVC.Controllers
             }
 
 
-            
-
+            HttpContext.Session.SetInt32("authenticated", 1);
 
             return View();
         }
