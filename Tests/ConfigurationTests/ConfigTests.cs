@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Reflection;
 namespace ConfigurationTests
 {
     public class Tests
@@ -37,10 +36,10 @@ namespace ConfigurationTests
         [TestCase("@")]
         public async Task InvalidConfigParseTest(string badValues)
         {
-           
-            await File.AppendAllTextAsync(Config.configFilename,badValues+"\n"+"BADSetting" );
-            
-            ConfigurationException ex =Assert.ThrowsAsync<ConfigurationException>(()=>Config.ParseConfig());
+
+            await File.AppendAllTextAsync(Config.configFilename, badValues + "\n" + "BADSetting");
+
+            ConfigurationException ex = Assert.ThrowsAsync<ConfigurationException>(() => Config.ParseConfig());
             TestContext.WriteLine($"Exception for bad values was thrown - {ex.GetType().Name} - {ex.Message}");
         }
 
@@ -48,13 +47,13 @@ namespace ConfigurationTests
         [TestCase("22")]
         public async Task DupeTest(string Value)
         {
-            await File.AppendAllTextAsync(Config.configFilename,"DatabasePort="+Value);
+            await File.AppendAllTextAsync(Config.configFilename, "DatabasePort=" + Value);
 
             ConfigurationException ex = Assert.ThrowsAsync<ConfigurationException>(() => Config.ParseConfig());
             TestContext.WriteLine($"Dupe exception was thrown - {ex.GetType().Name} - {ex.Message}");
         }
 
-       
+
 
 
 

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WebsiteCustomerChatConfiguration
+﻿namespace WebsiteCustomerChatConfiguration
 {
     /// <summary>
     /// Occurs when configuration file has wrong data, when configuration couldn't be parsed,<\br>

@@ -1,13 +1,7 @@
-﻿using System.Web;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Session;
-using System.Diagnostics;
-using WebsiteCustomerChatMVC.Models;
-using WebsiteCustomerChatConfiguration;
-using WebsiteCustomerChatMVC.SignarR;
+﻿using Microsoft.AspNetCore.Mvc;
 using WebsiteCustomerChatMVC.DatabaseNoEF.MySql;
 using WebsiteCustomerChatMVC.DataSets;
-using Mysqlx.Session;
+using WebsiteCustomerChatMVC.SignarR;
 
 
 namespace WebsiteCustomerChatMVC.Controllers
@@ -19,12 +13,12 @@ namespace WebsiteCustomerChatMVC.Controllers
 
 
         MysqlUserEngine dbnoef = new MysqlUserEngine();
-        public LoggedInController(ILogger<HomeController> logger,ChatModule chatmodule)
+        public LoggedInController(ILogger<HomeController> logger, ChatModule chatmodule)
         {
             _logger = logger;
             _chatModule = chatmodule;
 
-            
+
 
         }
 
@@ -43,18 +37,18 @@ namespace WebsiteCustomerChatMVC.Controllers
             }
 
 
-            
+
         }
 
         [HttpPost]
         public async Task<IActionResult> LoggedIn(IFormCollection form)
         {
-            
+
             string Username = form["username"];
             string Password = form["password"];
 
-            LoggedUserContext user =await dbnoef.UserLogin(Username, Password);
-            
+            LoggedUserContext user = await dbnoef.UserLogin(Username, Password);
+
             if (user.NoUserContext == true)
             {
                 await dbnoef.DisposeAsync();

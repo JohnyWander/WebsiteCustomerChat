@@ -1,7 +1,6 @@
 ﻿using MySql.Data.MySqlClient;
-using System.Xml;
-using WebsiteCustomerChatMVC.Helpers;
 using WebsiteCustomerChatMVC.DataSets;
+using WebsiteCustomerChatMVC.Helpers;
 
 namespace WebsiteCustomerChatMVC.DatabaseNoEF.MySql
 {
@@ -17,8 +16,8 @@ namespace WebsiteCustomerChatMVC.DatabaseNoEF.MySql
         {
             byte[] salt;
             CryptoHelper crypt = new CryptoHelper();
-            
-            using(MySqlCommand addadmin = new MySqlCommand("", _connection))
+
+            using (MySqlCommand addadmin = new MySqlCommand("", _connection))
             {
                 addadmin.CommandText =
                 @"
@@ -30,13 +29,13 @@ namespace WebsiteCustomerChatMVC.DatabaseNoEF.MySql
                 await addadmin.ExecuteNonQueryAsync();
             }
 
-            using (MySqlCommand addRole = new MySqlCommand("",_connection))
+            using (MySqlCommand addRole = new MySqlCommand("", _connection))
             {
                 addRole.CommandText =
                 @"INSERT INTO user_roles(user_id,role_id) VALUES ((select Id from users where username=@username),(select Id from roles where Name=""Admin""));";
                 addRole.Parameters.AddWithValue("@username", Username);
                 await addRole.ExecuteNonQueryAsync();
-                
+
             }
 
 
@@ -44,7 +43,7 @@ namespace WebsiteCustomerChatMVC.DatabaseNoEF.MySql
 
         public async Task<LoggedUserContext> UserLogin(string Username, string Password)
         {
-            using(MySqlCommand select = new MySqlCommand("", _connection))
+            using (MySqlCommand select = new MySqlCommand("", _connection))
             {
                 /*          Id int PRIMARY KEY AUTO_INCREMENT,
                p_hash longblob,
@@ -64,12 +63,12 @@ namespace WebsiteCustomerChatMVC.DatabaseNoEF.MySql
                 WHERE users.username = @username
                 ";
                 select.Parameters.AddWithValue("@username", Username);
-                var reader =select.ExecuteReader();
+                var reader = select.ExecuteReader();
 
 
 
                 CryptoHelper crypt = new CryptoHelper();
-                
+
                 if (!reader.HasRows)
                 {
                     return LoggedUserContext.CreateFailedUserContext();
@@ -83,7 +82,7 @@ namespace WebsiteCustomerChatMVC.DatabaseNoEF.MySql
 
                     List<string> permissions = new List<string> { reader.GetString("PermissionName") };
 
-                    while((await reader.ReadAsync()))
+                    while ((await reader.ReadAsync()))
                     {
                         permissions.Add(reader.GetString("PermissionName"));
                     }
@@ -101,16 +100,16 @@ namespace WebsiteCustomerChatMVC.DatabaseNoEF.MySql
 
 
                         return new LoggedUserContext(username); //TODO: more data for logged context such as permissions
-                            
+
                     }
 
                 }
             }
 
-         
-            
 
-            
+
+
+
 
         }
 

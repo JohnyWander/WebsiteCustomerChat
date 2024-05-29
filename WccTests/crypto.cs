@@ -1,22 +1,18 @@
-﻿using System;
-using System.IO;
-using Org.BouncyCastle.Asn1.X500;
-using Org.BouncyCastle.Asn1.X509;
+﻿using Org.BouncyCastle.Asn1.X509;
 using Org.BouncyCastle.Crypto;
 using Org.BouncyCastle.Crypto.Generators;
+using Org.BouncyCastle.Crypto.Operators;
 using Org.BouncyCastle.Crypto.Prng;
+using Org.BouncyCastle.Math;
 using Org.BouncyCastle.Pkcs;
 using Org.BouncyCastle.Security;
 using Org.BouncyCastle.X509;
-using System.Security.Cryptography.X509Certificates;
-using Org.BouncyCastle.Crypto.Operators;
-using Org.BouncyCastle.Math;
 namespace SelfSignedPfxGenerator
 {
     class crypto
     {
 
-        public  byte[] GenerateSelfSignedCertificatePfx(string subjectName, string password)
+        public byte[] GenerateSelfSignedCertificatePfx(string subjectName, string password)
         {
             // Generate Key Pair
             var keyGenerationParameters = new KeyGenerationParameters(new SecureRandom(new CryptoApiRandomGenerator()), 2048);

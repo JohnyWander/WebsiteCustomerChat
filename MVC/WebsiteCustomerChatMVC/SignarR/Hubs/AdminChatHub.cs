@@ -12,39 +12,39 @@ namespace WebsiteCustomerChatMVC.SignarR.Hubs
         {
             _httpContextAccessor = httpContextAccessor;
             _chatModule = module;
-            
-        
+
+
         }
 
         private bool Authorized(string Token)
         {
-            
+
             return false;
 
         }
-        
+
         public async Task NewClient(string SyncData)
         {
-          /*  //check if client is from reconnect - 
-            string cookie=ChatEvents.CheckIfClientReconnected();
-            if(cookie != null)
-            {
-                Debug.WriteLine(cookie);
-                await Clients.All.SendAsync("reconClient");
-            }
-          */
-           await Clients.All.SendAsync("NewClient", "new client");
+            /*  //check if client is from reconnect - 
+              string cookie=ChatEvents.CheckIfClientReconnected();
+              if(cookie != null)
+              {
+                  Debug.WriteLine(cookie);
+                  await Clients.All.SendAsync("reconClient");
+              }
+            */
+            await Clients.All.SendAsync("NewClient", "new client");
         }
-        
-        public async Task SendText(string ID,string text)
+
+        public async Task SendText(string ID, string text)
         {
-            Debug.WriteLine("Operator responded:"+text);
-            await _chatModule.OperatorTextMessage(ID, text);          
+            Debug.WriteLine("Operator responded:" + text);
+            await _chatModule.OperatorTextMessage(ID, text);
         }
 
         public async Task ChangeMyName(string newName)
-        {           
-            await _chatModule.OperatorNameChange(Context.ConnectionId,newName);
+        {
+            await _chatModule.OperatorNameChange(Context.ConnectionId, newName);
         }
 
         public async Task<string> GetExistingWorkspace()
@@ -62,15 +62,15 @@ namespace WebsiteCustomerChatMVC.SignarR.Hubs
         public override async Task OnConnectedAsync()
         {
             string connectionId = Context.ConnectionId;
-            await  _chatModule.OperatorConnected(connectionId);       
+            await _chatModule.OperatorConnected(connectionId);
             await base.OnConnectedAsync();
         }
 
         public override async Task OnDisconnectedAsync(Exception exception)
         {
-            
+
             string connectionId = Context.ConnectionId;
-            await _chatModule.OperatorDisconnected(connectionId);          
+            await _chatModule.OperatorDisconnected(connectionId);
             await base.OnDisconnectedAsync(exception);
         }
     }

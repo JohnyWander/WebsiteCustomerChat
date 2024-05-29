@@ -1,18 +1,13 @@
 ﻿using MySql.Data.MySqlClient;
-using System;
 using System.Data;
-using System.Diagnostics;
 using System.Text;
-
-using WebsiteCustomerChatConfiguration;
-using System.Threading;
 using WebsiteCustomerChatMVC.SignarR.Hubs;
 
 namespace WebsiteCustomerChatMVC.DatabaseNoEF.MySql
 {
     public class MySqlChatEngine : MysqlBase
     {
-        
+
         public MySqlChatEngine() : base()
         {
 
@@ -21,7 +16,7 @@ namespace WebsiteCustomerChatMVC.DatabaseNoEF.MySql
 
         public async Task PushChatHistoryToDb(string connectionID, ConnectedClient clientCallback)
         {
-            
+
 
             byte[] chatblob = Encoding.UTF8.GetBytes(clientCallback.ExportMessages());
             MySqlCommand checkForChat = new MySqlCommand("select * from chats where access_token = @cid", _connection);
@@ -39,9 +34,9 @@ namespace WebsiteCustomerChatMVC.DatabaseNoEF.MySql
                 await reader.DisposeAsync();
 
                 chatblob = blobData.Concat(chatblob).ToArray();
-               
 
-                
+
+
                 MySqlCommand update = new MySqlCommand("UPDATE chats set ConversationBlob = @data where access_token =@cid", _connection);
                 update.Parameters.AddWithValue("@data", chatblob);
                 update.Parameters.AddWithValue("@cid", clientCallback.AccessToken);
@@ -52,7 +47,7 @@ namespace WebsiteCustomerChatMVC.DatabaseNoEF.MySql
 
                 await update.DisposeAsync();
 
-                
+
                 if (rowsAffected == 0)
                 {
                     throw new Exception("Record should be modified and was not");
@@ -62,7 +57,7 @@ namespace WebsiteCustomerChatMVC.DatabaseNoEF.MySql
             else
             {
                 await reader.DisposeAsync();
-                
+
                 MySqlCommand add = new MySqlCommand("INSERT INTO chats (access_token,client_endpoint,ConversationBlob, TimeStarted, TimeEnded) VALUES (@token,@end,@blob,@ds,@de)", _connection);
                 add.Parameters.AddWithValue("@token", clientCallback.AccessToken);
                 add.Parameters.AddWithValue("@end", clientCallback.IP);
@@ -74,7 +69,7 @@ namespace WebsiteCustomerChatMVC.DatabaseNoEF.MySql
                 int affected = await add.ExecuteNonQueryAsync();
                 Console.WriteLine("FINISHED ADDING");
                 await add.DisposeAsync();
-            
+
                 if (affected == 0)
                 {
                     {
@@ -90,19 +85,19 @@ namespace WebsiteCustomerChatMVC.DatabaseNoEF.MySql
 
         public async Task<string> GetChatHistoryFromDb(ConnectedClient clientCallback)
         {
-            
+
             MySqlCommand checkForChat = new MySqlCommand("select * from chats where access_token = @cid", _connection);
             checkForChat.Parameters.AddWithValue("@cid", clientCallback.AccessToken);
             var reader = await checkForChat.ExecuteReaderAsync();
 
-            
+
             if (reader.HasRows)
             {
                 await reader.ReadAsync();
                 byte[] blob = (byte[])reader["ConversationBlob"];
                 await reader.DisposeAsync();
                 await checkForChat.DisposeAsync();
-                
+
                 Console.WriteLine(Encoding.UTF8.GetString(blob));
                 return Encoding.UTF8.GetString(blob);
             }
@@ -111,7 +106,7 @@ namespace WebsiteCustomerChatMVC.DatabaseNoEF.MySql
                 Console.WriteLine("RESULT");
                 await reader.DisposeAsync();
                 await checkForChat.DisposeAsync();
-                
+
                 return "";
 
             }
@@ -120,7 +115,7 @@ namespace WebsiteCustomerChatMVC.DatabaseNoEF.MySql
 
         public async Task<string> GetOperatorWorkspace()
         {
-            MySqlCommand loadWorkspace = new MySqlCommand("select access_token,ConversationBlob from chats",_connection );
+            MySqlCommand loadWorkspace = new MySqlCommand("select access_token,ConversationBlob from chats", _connection);
             var reader = await loadWorkspace.ExecuteReaderAsync();
 
             StringBuilder builder = new StringBuilder();

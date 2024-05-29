@@ -15,11 +15,11 @@ namespace WebsiteCustomerChatMVC.Controllers
 
         public IActionResult Index()
         {
-           
-            return View(new IndexViewModel((Request.Query.Count > 0) && (Request.Query["Badlogin"] == "yes") ? true:false  )) ;
+
+            return View(new IndexViewModel((Request.Query.Count > 0) && (Request.Query["Badlogin"] == "yes") ? true : false));
         }
-        
-        
+
+
 
         public IActionResult Privacy()
         {

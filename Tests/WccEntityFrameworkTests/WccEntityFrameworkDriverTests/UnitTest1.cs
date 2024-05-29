@@ -1,6 +1,3 @@
-using WccEntityFrameworkDriver.DatabaseEngineOperations.Helpers;
-
-
 namespace WccEntityFrameworkDriverTests
 {
     public class Tests
@@ -8,8 +5,8 @@ namespace WccEntityFrameworkDriverTests
         [SetUp]
         public void Setup()
         {
-            
-            
+
+
 
         }
 
@@ -21,7 +18,7 @@ namespace WccEntityFrameworkDriverTests
             long result = helper.TestBcryptSpeed("dwqjndbqwhjbdwiqdqwhduihqwidq", 30);
             TestContext.WriteLine($"elapsed time - {result}ms");
             Assert.Pass();
-            
+
         }
     }
 }

@@ -1,15 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
-using MySqlX.XDevAPI;
 // SignalR Hub
-using Microsoft.AspNetCore.SignalR;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Http;
-using System.Web;
 using System.Diagnostics;
-using Microsoft.DotNet.Scaffolding.Shared.Messaging;
-using System.Net.Http;
-using System.Collections.Concurrent;
 
 namespace WebsiteCustomerChatMVC.SignarR.Hubs
 {
@@ -18,9 +9,9 @@ namespace WebsiteCustomerChatMVC.SignarR.Hubs
         public string ConnectionID;
         public string CookieToken;
 
-        
 
-        public CookieWaiter(string ConnectionID,string token)
+
+        public CookieWaiter(string ConnectionID, string token)
         {
             this.ConnectionID = ConnectionID;
             this.CookieToken = token;
@@ -44,55 +35,55 @@ namespace WebsiteCustomerChatMVC.SignarR.Hubs
 
         List<CookieWaiter> _cookies = new List<CookieWaiter>();
 
-        
+
 
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public ChatHub(IHttpContextAccessor httpContextAccessor,ChatModule module)
+        public ChatHub(IHttpContextAccessor httpContextAccessor, ChatModule module)
         {
-           
+
             _httpContextAccessor = httpContextAccessor;
             _chatModule = module;
-            
+
         }
-        
 
-   
 
-      
+
+
+
         public override async Task OnConnectedAsync()
         {
-          
-
-                string connectionId = Context.ConnectionId;
-                var cookieValue = _httpContextAccessor.HttpContext.Request.Query["c"].ToString();                              
-                    
-
-                if (cookieValue != null && cookieValue != "")
-                {
-                    Console.WriteLine("GOT TOKEN :" + cookieValue);
-                _cookies.Add(new CookieWaiter(Context.ConnectionId,cookieValue));
-                    await _chatModule.UserConnected(connectionId, cookieValue, true, Context.GetHttpContext().Connection.RemoteIpAddress.ToString());
 
 
-                }
-                else
-                {
-                    Console.WriteLine("NO TOKEN");
-                    await _chatModule.UserConnected(connectionId, Context.GetHttpContext().Connection.RemoteIpAddress.ToString());
-                }
-            
+            string connectionId = Context.ConnectionId;
+            var cookieValue = _httpContextAccessor.HttpContext.Request.Query["c"].ToString();
+
+
+            if (cookieValue != null && cookieValue != "")
+            {
+                Console.WriteLine("GOT TOKEN :" + cookieValue);
+                _cookies.Add(new CookieWaiter(Context.ConnectionId, cookieValue));
+                await _chatModule.UserConnected(connectionId, cookieValue, true, Context.GetHttpContext().Connection.RemoteIpAddress.ToString());
+
+
+            }
+            else
+            {
+                Console.WriteLine("NO TOKEN");
+                await _chatModule.UserConnected(connectionId, Context.GetHttpContext().Connection.RemoteIpAddress.ToString());
+            }
+
 
 
             await base.OnConnectedAsync();
         }
 
-    
+
         public override async Task OnDisconnectedAsync(Exception exception)
         {
             string connectionId = Context.ConnectionId;
-           
+
             //await _chatModule.UserDisconnected(connectionId);
-            
+
             await base.OnDisconnectedAsync(exception);
         }
 
@@ -112,25 +103,25 @@ namespace WebsiteCustomerChatMVC.SignarR.Hubs
 
         public async Task SendMessage(string message)
         {
-            await _chatModule.UserTextMessage(message,Context.ConnectionId);
-            
+            await _chatModule.UserTextMessage(message, Context.ConnectionId);
+
             Debug.WriteLine("FIRING");
             await Clients.Client(Context.ConnectionId).SendAsync("SendedResponse", message);
         }
 
         public async Task<string> getOperatorName()
         {
-            
+
             Debug.WriteLine("GET OP");
             //await Clients.Client(Context.ConnectionId).SendAsync("",ChatEvents.UserGetsOperatorName());
-            return await _chatModule.UserGetsOperatorName();           
+            return await _chatModule.UserGetsOperatorName();
         }
 
         // public async Task CheckOnline()
 
 
 
-    } 
+    }
 }
 
 

@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Org.BouncyCastle.Crypto.Generators;
-using System.Security.Cryptography;
-using System.Security;
+﻿using Org.BouncyCastle.Crypto.Generators;
 using System.Diagnostics;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace WebsiteCustomerChatMVC.Helpers
 {

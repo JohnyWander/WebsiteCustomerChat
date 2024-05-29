@@ -1,5 +1,4 @@
-﻿using MySqlX.XDevAPI;
-using WebsiteCustomerChatConfiguration;
+﻿using WebsiteCustomerChatConfiguration;
 
 namespace WebsiteCustomerChatMVC.Models
 {
@@ -7,14 +6,14 @@ namespace WebsiteCustomerChatMVC.Models
     {
         public bool ConfigurationFileExists;
         public bool RedirectFromBadLogin;
-      
+
 
         public IndexViewModel(bool BadLogin)
         {
             CheckForConfigFile();
             this.RedirectFromBadLogin = BadLogin;
         }
-        
+
 
         private void CheckForConfigFile()
         {

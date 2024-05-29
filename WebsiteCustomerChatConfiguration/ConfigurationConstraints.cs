@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WebsiteCustomerChatConfiguration
+﻿namespace WebsiteCustomerChatConfiguration
 {
     public static class ConfigurationConstraints
     {
-        public static bool IsDecimal(string value="")
+        public static bool IsDecimal(string value = "")
         {
-           return int.TryParse(value,out _);
+            return int.TryParse(value, out _);
         }
 
-        public static bool IsBoolean(string value="")
+        public static bool IsBoolean(string value = "")
         {
             return bool.TryParse(value, out _);
         }

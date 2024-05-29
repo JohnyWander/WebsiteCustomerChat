@@ -1,20 +1,12 @@
-﻿
-using Microsoft.AspNetCore.Components.RenderTree;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc.ViewEngines;
-using Org.BouncyCastle.Asn1.X509;
-using System.Diagnostics;
-using System.Text;
-using WebsiteCustomerChatMVC.Models;
-using WebsiteCustomerChatConfiguration;
-
-
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ViewFeatures;
-using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
+using System.Diagnostics;
+using WebsiteCustomerChatConfiguration;
+using WebsiteCustomerChatMVC.Models;
 
 namespace WebsiteCustomerChatMVC.Controllers
 {
@@ -32,7 +24,7 @@ namespace WebsiteCustomerChatMVC.Controllers
         public InstallController(ILogger<HomeController> logger)
         {
             _logger = logger;
-           
+
         }
 
         public async Task<IActionResult> Install()
@@ -57,18 +49,18 @@ namespace WebsiteCustomerChatMVC.Controllers
                 //await Task.Delay(5000);
                 await Response.WriteAsync("Creating Config File...<br>");
                 await model.Setconfiguration();
-                
+
                 await Config.BuildConfigFile();
                 await Response.WriteAsync("Values Set, conf file created,\nTrying to parse Configuration...<br>");
-                await Response.WriteAsync(await model.TryParseConfig()+ "<br>");
+                await Response.WriteAsync(await model.TryParseConfig() + "<br>");
                 await Response.WriteAsync("Trying to create database ... <br>");
-                await Response.WriteAsync(await model.EnsureOrCreate()+"<br>");
+                await Response.WriteAsync(await model.EnsureOrCreate() + "<br>");
                 await Response.WriteAsync("Creating Admin Account");
                 await Response.WriteAsync(await model.CreateAdminAccount());
                 // await Response.WriteAsync("\n");
 
-                
-                if(model.DatabaseOK && model.ConfigOK)
+
+                if (model.DatabaseOK && model.ConfigOK)
                 {
                     await Response.WriteAsync("Installation success <button value=\"Login' onclick='location.href=\">");
                 }
@@ -111,7 +103,7 @@ namespace WebsiteCustomerChatMVC.Controllers
 
 
 
-        public  string RenderRazorViewToString(Controller controller, string viewName, object model)
+        public string RenderRazorViewToString(Controller controller, string viewName, object model)
         {
             controller.ViewData.Model = model;
             using (var sw = new StringWriter())
@@ -173,4 +165,5 @@ namespace WebsiteCustomerChatMVC.Controllers
 
 
 
-    } }
+    }
+}

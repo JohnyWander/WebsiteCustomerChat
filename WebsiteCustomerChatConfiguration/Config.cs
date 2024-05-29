@@ -1,9 +1,5 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Reflection.Metadata.Ecma335;
+﻿using System.Diagnostics;
 using System.Text;
-using System.Xml;
 using static WebsiteCustomerChatConfiguration.ConfigurationConstraints;
 
 namespace WebsiteCustomerChatConfiguration
@@ -14,14 +10,14 @@ namespace WebsiteCustomerChatConfiguration
         public string Value;
         public string Description;
 
-        public  Predicate<string>[] ?ValueConstraints = null;
-        
-        public ConfigData(string name, string value,string description,params Predicate<string>[] constrains)
+        public Predicate<string>[]? ValueConstraints = null;
+
+        public ConfigData(string name, string value, string description, params Predicate<string>[] constrains)
         {
             Name = name;
             Value = value;
             Description = description;
-            
+
         }
     }
 
@@ -33,7 +29,8 @@ namespace WebsiteCustomerChatConfiguration
 
         public static List<ConfigData> ParsedConfiguration = new List<ConfigData>();
 
-        public static List<ConfigData> Configuration {
+        public static List<ConfigData> Configuration
+        {
             get
             {
                 if (ParsedConfiguration is not null)
@@ -46,11 +43,11 @@ namespace WebsiteCustomerChatConfiguration
 
         public static async Task ParseConfig()
         {
-            string[] validconfigNames = ConfigDictionary.Select(x=>x.Name).ToArray();
+            string[] validconfigNames = ConfigDictionary.Select(x => x.Name).ToArray();
 
             string[] fileLines = File.ReadAllLines(configFilename);
 
-            List<string> configLoaded =  fileLines.Where(s=>!s.StartsWith(_desc)).Where(s=>!string.IsNullOrEmpty(s)).ToList(); //filter out commented values
+            List<string> configLoaded = fileLines.Where(s => !s.StartsWith(_desc)).Where(s => !string.IsNullOrEmpty(s)).ToList(); //filter out commented values
             List<string> configNames = new List<string>();
             List<string> configValues = new List<string>();
             configLoaded.ForEach(x =>
@@ -61,7 +58,7 @@ namespace WebsiteCustomerChatConfiguration
 
             var dupes = configNames.GroupBy(x => x)
                 .Where(g => g.Count() > 1)
-                .Select(g => new { Value = g.Key,Count = g.Count() });
+                .Select(g => new { Value = g.Key, Count = g.Count() });
 
             if (dupes.Count() > 0)
             {
@@ -103,7 +100,8 @@ namespace WebsiteCustomerChatConfiguration
 
                     List<string> FailedConstraints = new List<string>();
 
-                    if (ConfigToLoad.ValueConstraints is not null) { 
+                    if (ConfigToLoad.ValueConstraints is not null)
+                    {
 
                         ConfigToLoad.ValueConstraints.ToList().ForEach(x =>
                         {
@@ -121,7 +119,7 @@ namespace WebsiteCustomerChatConfiguration
                         }
                         else
                         {
-                            ParsedConfiguration.Add(new ConfigData(ConfigToLoad.Name,value,ConfigToLoad.Description));
+                            ParsedConfiguration.Add(new ConfigData(ConfigToLoad.Name, value, ConfigToLoad.Description));
                         }
 
                     }
@@ -136,13 +134,13 @@ namespace WebsiteCustomerChatConfiguration
 
             }
 
-           
 
-            
+
+
         }
 
 
-        
+
 
         public static async Task BuildConfigFile()
         {
@@ -159,26 +157,26 @@ namespace WebsiteCustomerChatConfiguration
 
                 await writer.DisposeAsync();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine("Error writing config file: " + e.Message);
             }
         }
 
-        public static Task SetConfigValue(string ConfigKey,string Value)
+        public static Task SetConfigValue(string ConfigKey, string Value)
         {
             ConfigData toChange = ConfigDictionary.FirstOrDefault(x => x.Name == ConfigKey);
 
             Debug.WriteLine(ConfigDictionary.IndexOf(toChange));
-            ConfigDictionary[ConfigDictionary.IndexOf(toChange)] = new ConfigData(toChange.Name, Value,toChange.Description,toChange.ValueConstraints);
-            
+            ConfigDictionary[ConfigDictionary.IndexOf(toChange)] = new ConfigData(toChange.Name, Value, toChange.Description, toChange.ValueConstraints);
+
             return Task.CompletedTask;
-            
+
         }
 
         public static string GetConfigValue(string ConfigKey)
         {
-           return ParsedConfiguration.FirstOrDefault(x => x.Name == ConfigKey).Value;            
+            return ParsedConfiguration.FirstOrDefault(x => x.Name == ConfigKey).Value;
         }
 
         public static IEnumerable<string> GetConfigKeys()
@@ -244,12 +242,11 @@ namespace WebsiteCustomerChatConfiguration
                     value:"https://localhost",
                     description:"endpoint to listen on like - https://example.com:443"
                 )
-            
+
 
             };
 
-}
-        
+    }
 
 
 
@@ -257,5 +254,6 @@ namespace WebsiteCustomerChatConfiguration
 
 
 
-    
+
+
 }

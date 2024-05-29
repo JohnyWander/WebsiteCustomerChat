@@ -1,18 +1,15 @@
-﻿using MySqlX.XDevAPI;
-using WebsiteCustomerChatConfiguration;
-
-namespace WebsiteCustomerChatMVC.Models
+﻿namespace WebsiteCustomerChatMVC.Models
 {
     public class LoggedInViewModel
     {
-       
+
 
         public LoggedInViewModel()
         {
 
         }
-        
-      
+
+
 
     }
 }

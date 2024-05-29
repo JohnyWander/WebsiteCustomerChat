@@ -1,23 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using System.Diagnostics;
-using System.Security.Cryptography;
-using WebsiteCustomerChatMVC.Models;
-using Microsoft.AspNetCore.Components.RenderTree;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.RazorPages;
-
-using Microsoft.CodeAnalysis.Scripting.Hosting;
-using WebsiteCustomerChatConfiguration;
-using System.Reflection;
-using Org.BouncyCastle.Crypto.Generators;
-using System.Runtime.CompilerServices;
+﻿using WebsiteCustomerChatConfiguration;
 using WebsiteCustomerChatMVC.DatabaseNoEF.MySql;
 
 namespace WebsiteCustomerChatMVC.Models
 {
     public class InstallationViewModel
     {
-        
+
         private string AdminUsername;
         private string AdminPassword;
         private string AdminConfirmPassword;
@@ -43,19 +31,19 @@ namespace WebsiteCustomerChatMVC.Models
 
         public InstallationViewModel(IFormCollection form)
         {
-           
+
             AdminUsername = form["username"];
             AdminPassword = form["password"];
             AdminConfirmPassword = form["confirmPassword"];
             dbengine = form["dbengine"];
-            
-            if(dbengine == "sqlite")
+
+            if (dbengine == "sqlite")
             {
                 //   sqlitedbFile = form["sqlitedbFile"];
                 //  DBengine = new SQLITEengine(sqlitedbFile);
                 throw new NotImplementedException("sqlite coming soon"); // TODO: sqlite support
             }
-            else if(dbengine == "mysql")
+            else if (dbengine == "mysql")
             {
                 server = form["server"];
                 port = form["port"];
@@ -85,13 +73,14 @@ namespace WebsiteCustomerChatMVC.Models
 
         public async Task Setconfiguration()
         {
-      
-           await Config.SetConfigValue("DatabaseEngine", dbengine);
+
+            await Config.SetConfigValue("DatabaseEngine", dbengine);
             if (this.dbengine == "mysql")
             {
                 await Config.SetConfigValue("DatabaseName", this.dbname);
             }
-            else {
+            else
+            {
                 await Config.SetConfigValue("DatabaseName", this.sqlitedbFile);
             }
             await Config.SetConfigValue("DatabaseUser", this.dbuser);
@@ -99,7 +88,7 @@ namespace WebsiteCustomerChatMVC.Models
             await Config.SetConfigValue("DatabaseHost", this.server);
             await Config.SetConfigValue("DatabasePort", this.port);
 
-                   
+
         }
 
         public async Task<string> TryParseConfig()
@@ -126,7 +115,8 @@ namespace WebsiteCustomerChatMVC.Models
                 await this.MysqlInstallEngine.EnsureExistanceOrCreate(dbname);
                 this.DatabaseOK = true;
                 return "Success";
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 return $"DB creation failed with exception -{ex.GetType().Name} {ex.Message} ";
             }
@@ -140,7 +130,8 @@ namespace WebsiteCustomerChatMVC.Models
                 await en.CreateAdminAccount(this.AdminUsername, this.AdminPassword);
                 this.AdminOK = true;
                 return "Success";
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 string mes = $"Error when creating Administrator account -{ex.GetType().Name} {ex.Message} {ex.InnerException.GetType().Name} {ex.InnerException.Message}";
                 if (ex.InnerException.InnerException.Message != null)

@@ -1,7 +1,4 @@
 ﻿using MySql.Data.MySqlClient;
-using Mysqlx.Crud;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 
 
 namespace WebsiteCustomerChatMVC.DatabaseNoEF.MySql
@@ -14,24 +11,24 @@ namespace WebsiteCustomerChatMVC.DatabaseNoEF.MySql
 
         }
 
-        public MySqlInstallEngine(string server, string port, string dbname, string dbuser, string dbpassword) : base( server,port,dbname, dbuser, dbpassword) { }
+        public MySqlInstallEngine(string server, string port, string dbname, string dbuser, string dbpassword) : base(server, port, dbname, dbuser, dbpassword) { }
 
 
 
         public async Task<string> EnsureExistanceOrCreate(string dbname)
         {
-                MySqlCommand check = new MySqlCommand("", _connection);
-            
-                check.CommandText =
-                @"SELECT SCHEMA_NAME
+            MySqlCommand check = new MySqlCommand("", _connection);
+
+            check.CommandText =
+            @"SELECT SCHEMA_NAME
                 FROM INFORMATION_SCHEMA.SCHEMATA
                 WHERE SCHEMA_NAME = @db";
-                check.Parameters.AddWithValue("@db", dbname);
+            check.Parameters.AddWithValue("@db", dbname);
 
 
-                try
-                {
-                    var r = await check.ExecuteReaderAsync();
+            try
+            {
+                var r = await check.ExecuteReaderAsync();
                 if (!r.HasRows)
                 {
 
@@ -40,9 +37,9 @@ namespace WebsiteCustomerChatMVC.DatabaseNoEF.MySql
 
 
                     MySqlCommand createDB = new MySqlCommand($"CREATE DATABASE {dbname};use {dbname}", _connection);
-                
-                    
-                    
+
+
+
                     await createDB.ExecuteNonQueryAsync();
                     await createDB.DisposeAsync();
 
@@ -53,7 +50,7 @@ namespace WebsiteCustomerChatMVC.DatabaseNoEF.MySql
                     await CreateRolePermissionsTable();
                     await CreateChatsTable();
                     await AddDefaultPermissions();
-                    await AddDefaultRoles();                 
+                    await AddDefaultRoles();
                     await AddDefaultPermsToRoles();
 
                     return "OK";
@@ -83,11 +80,12 @@ namespace WebsiteCustomerChatMVC.DatabaseNoEF.MySql
                     return "OK";
                 }
 
-                
-                }catch(Exception ex)
-                {
-                    return $"ERROR!: {ex.GetType().Name} -  {ex.Message} - {ex.InnerException}"; 
-                }
+
+            }
+            catch (Exception ex)
+            {
+                return $"ERROR!: {ex.GetType().Name} -  {ex.Message} - {ex.InnerException}";
+            }
 
         }
 
@@ -97,8 +95,9 @@ namespace WebsiteCustomerChatMVC.DatabaseNoEF.MySql
 
         private async Task CreateUsersTable()
         {
-            using (MySqlCommand createTable = new MySqlCommand("", _connection)) {
-                createTable.CommandText =@"create table users(
+            using (MySqlCommand createTable = new MySqlCommand("", _connection))
+            {
+                createTable.CommandText = @"create table users(
 	 Id int PRIMARY KEY AUTO_INCREMENT,
 	 p_hash longblob,
 	 p_salt longblob,
@@ -112,30 +111,30 @@ namespace WebsiteCustomerChatMVC.DatabaseNoEF.MySql
                 await createTable.ExecuteNonQueryAsync();
 
             }
-     
-                
-            
+
+
+
         }
 
         private async Task CreateRolesTable()
         {
-            
-           using(MySqlCommand createTable = new MySqlCommand("",_connection))
-           {
-                createTable.CommandText = 
+
+            using (MySqlCommand createTable = new MySqlCommand("", _connection))
+            {
+                createTable.CommandText =
                 @"CREATE TABLE roles (
                     Id int PRIMARY KEY AUTO_INCREMENT,
                     Name VARCHAR(50) UNIQUE NOT NULL
                 );
                 ";
                 await createTable.ExecuteNonQueryAsync();
-           }
+            }
 
         }
 
         private async Task CreatePermissionsTable()
         {
-            using(MySqlCommand createTable = new MySqlCommand("",_connection))
+            using (MySqlCommand createTable = new MySqlCommand("", _connection))
             {
                 createTable.CommandText =
                 @"CREATE TABLE permissions(
@@ -171,7 +170,7 @@ namespace WebsiteCustomerChatMVC.DatabaseNoEF.MySql
 
         private async Task CreateRolePermissionsTable()
         {
-            using(MySqlCommand createTable = new MySqlCommand("", _connection))
+            using (MySqlCommand createTable = new MySqlCommand("", _connection))
             {
                 createTable.CommandText =
                 @"Create Table role_permissions(
@@ -215,7 +214,7 @@ namespace WebsiteCustomerChatMVC.DatabaseNoEF.MySql
 
         private async Task AddDefaultPermissions()
         {
-            using(MySqlCommand addPerms = new MySqlCommand("", _connection))
+            using (MySqlCommand addPerms = new MySqlCommand("", _connection))
             {
                 addPerms.CommandText = "INSERT INTO permissions(PermissionName) VALUES (\"ALL\")";
                 await addPerms.ExecuteNonQueryAsync();
@@ -225,17 +224,17 @@ namespace WebsiteCustomerChatMVC.DatabaseNoEF.MySql
 
         private async Task AddDefaultRoles()
         {
-           using(MySqlCommand addroles = new MySqlCommand("",_connection))
-           {
+            using (MySqlCommand addroles = new MySqlCommand("", _connection))
+            {
                 addroles.CommandText =
                 @"INSERT INTO roles(Name) VALUES (""Admin"")";
-                await addroles.ExecuteNonQueryAsync();              
-           }
+                await addroles.ExecuteNonQueryAsync();
+            }
         }
 
         private async Task AddDefaultPermsToRoles()
         {
-            using(MySqlCommand bind =  new MySqlCommand("",_connection))
+            using (MySqlCommand bind = new MySqlCommand("", _connection))
             {
                 bind.CommandText =
                 @"INSERT INTO role_permissions(role_id,permission_id)

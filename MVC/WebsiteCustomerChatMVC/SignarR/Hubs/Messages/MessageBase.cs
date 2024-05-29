@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-namespace WebsiteCustomerChatMVC.SignarR.Hubs.Messages
+﻿namespace WebsiteCustomerChatMVC.SignarR.Hubs.Messages
 {
     internal class MessageBase
     {
@@ -16,7 +14,7 @@ namespace WebsiteCustomerChatMVC.SignarR.Hubs.Messages
             ToOperator,
             ToClient
         }
-        
+
         internal MessageType messageType;
         internal MessageDirection direction;
 
@@ -25,12 +23,12 @@ namespace WebsiteCustomerChatMVC.SignarR.Hubs.Messages
         internal string MediaLocalPath;
 
 
-        public MessageBase(MessageType messageType,MessageDirection messageDirection, string message)
+        public MessageBase(MessageType messageType, MessageDirection messageDirection, string message)
         {
             this.messageType = messageType;
             this.direction = messageDirection;
-           
-            if(messageType == MessageType.text)
+
+            if (messageType == MessageType.text)
             {
                 MessageData = message;
             }

@@ -1,16 +1,8 @@
-
-using WebsiteCustomerChatMVC.ViewTostring;
-using WebsiteCustomerChatConfiguration;
-using Microsoft.AspNetCore.SignalR;
-using Microsoft.AspNetCore.Mvc.ApplicationParts;
-using WebsiteCustomerChatMVC.SignarR.Hubs;
-using WebsiteCustomerChatMVC.SignarR;
-using System;
-using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Server.Kestrel.Https;
-using Microsoft.Extensions.Options;
 using System.Security.Cryptography.X509Certificates;
-using Microsoft.AspNetCore;
+using WebsiteCustomerChatConfiguration;
+using WebsiteCustomerChatMVC.SignarR;
+using WebsiteCustomerChatMVC.SignarR.Hubs;
 
 namespace WebsiteCustomerChatMVC
 {
@@ -18,32 +10,25 @@ namespace WebsiteCustomerChatMVC
     {
         public static void Init(out bool ConfigExists)
         {
-#if RELEASE
-
-           
-#endif
-
             ConfigExists = File.Exists(Config.configFilename);
             if (ConfigExists)
             {
 
                 Config.ParseConfig();
                 string dbEngine = Config.GetConfigValue("DatabaseEngine");
-                
+
                 string DbName = Config.GetConfigValue("DatabaseName");
                 string DbServer = Config.GetConfigValue("DatabaseHost");
                 string dbport = Config.GetConfigValue("DatabasePort");
                 string dbuser = Config.GetConfigValue("DatabaseUser");
-                string dbpassword = Config.GetConfigValue("DatabasePassword");           
-
+                string dbpassword = Config.GetConfigValue("DatabasePassword");
             }
             else
             {
                 return; // Assume that wcc is not installed and proceed with normal startup
             }
-            
-        }
 
+        }
 
         public static void Main(string[] args)
         {
@@ -51,7 +36,7 @@ namespace WebsiteCustomerChatMVC
             Init(out IsInstalled);
 
             var builder = WebApplication.CreateBuilder(args);
-            
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             builder.Services.AddEndpointsApiExplorer();
@@ -73,9 +58,9 @@ namespace WebsiteCustomerChatMVC
             {
                 o.ClientTimeoutInterval = TimeSpan.FromSeconds(30);
                 o.KeepAliveInterval = TimeSpan.FromSeconds(15);
-                
+
             });
-            
+
             builder.Services.AddHttpContextAccessor();
             builder.Services.AddSingleton<ChatModule>();
 
@@ -89,38 +74,39 @@ namespace WebsiteCustomerChatMVC
                        .AllowCredentials();
             }));
 
-          //  if (!builder.Environment.IsDevelopment())
-           // {
-                
-               
-                if (IsInstalled) {
-                    ConfigData certConf = Config.ParsedConfiguration.FirstOrDefault(c => c.Name == "Pfx certificate Path");
-                    ConfigData certPass = Config.ParsedConfiguration.FirstOrDefault(c => c.Name == "Certificate password");
-                        if (certConf.Value != null && certConf.Value !="none")
-                        {
-                            var httpsConnectionAdapterOptions = new HttpsConnectionAdapterOptions
-                            {
-                                SslProtocols = System.Security.Authentication.SslProtocols.Tls12,
-                                ClientCertificateMode = ClientCertificateMode.NoCertificate,
-                                ServerCertificate = new X509Certificate2(certConf.Value, certPass.Value)
-                            };
+            //  if (!builder.Environment.IsDevelopment())
+            // {
 
-                            builder.WebHost.ConfigureKestrel(options =>
-                            options.ConfigureEndpointDefaults(listenOptions =>
-                            listenOptions.UseHttps(httpsConnectionAdapterOptions)));
-                        }
-               // }
+
+            if (IsInstalled)
+            {
+                ConfigData certConf = Config.ParsedConfiguration.FirstOrDefault(c => c.Name == "Pfx certificate Path");
+                ConfigData certPass = Config.ParsedConfiguration.FirstOrDefault(c => c.Name == "Certificate password");
+                if (certConf.Value != null && certConf.Value != "none")
+                {
+                    var httpsConnectionAdapterOptions = new HttpsConnectionAdapterOptions
+                    {
+                        SslProtocols = System.Security.Authentication.SslProtocols.Tls12,
+                        ClientCertificateMode = ClientCertificateMode.NoCertificate,
+                        ServerCertificate = new X509Certificate2(certConf.Value, certPass.Value)
+                    };
+
+                    builder.WebHost.ConfigureKestrel(options =>
+                    options.ConfigureEndpointDefaults(listenOptions =>
+                    listenOptions.UseHttps(httpsConnectionAdapterOptions)));
+                }
+                // }
 
 
 
             }
 
-                //builder.Services.AddSingleton(hubContext);
-                //builder.Services.AddSingleton(adminContext);            
+            //builder.Services.AddSingleton(hubContext);
+            //builder.Services.AddSingleton(adminContext);            
 
             //builder.Services.AddScoped<IViewRenderer, ViewRenderer>();
             var app = builder.Build();
-            
+
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -128,7 +114,7 @@ namespace WebsiteCustomerChatMVC
                 app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 //app.UseHsts();
-                
+
             }
             else
             {
@@ -137,7 +123,7 @@ namespace WebsiteCustomerChatMVC
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            
+
             app.UseRouting();
             app.UseSession();
 
@@ -163,8 +149,8 @@ namespace WebsiteCustomerChatMVC
 
 
             app.UseCors("CorsPolicy");
-            
-          
+
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapHub<ChatHub>("/Chathub");
@@ -173,14 +159,14 @@ namespace WebsiteCustomerChatMVC
             app.UseEndpoints(enpoints =>
             {
                 enpoints.MapHub<AdminChatHub>("/ChatterHub");
-                
+
             });
 
             app.UseEndpoints(enpoints =>
             {
                 enpoints.MapHub<CheckIfOnlineHub>("/online");
             });
-           
+
 
 
             app.Run();
